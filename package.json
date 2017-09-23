@@ -1,0 +1,21 @@
+{
+  "name": "scorenami",
+  "version": "0.1.0",
+  "description": "Real time sports scores.",
+  "author": "Relay Labs Inc.",
+  "license": "ISC",
+  "homepage": "https://github.com/relaylabs/scorenami#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/relaylabs/scorenami.git"
+  },
+  "bugs": {
+    "url": "https://github.com/relaylabs/scorenami/issues"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "lerna": "^2.2.0"
+  }
+}
