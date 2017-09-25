@@ -1,0 +1,45 @@
+{
+  "name": "scorenami",
+  "version": "0.1.0",
+  "description": "Real time sports scores.",
+  "author": "Relay Labs Inc.",
+  "license": "ISC",
+  "homepage": "https://github.com/relaylabs/scorenami#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/relaylabs/scorenami.git"
+  },
+  "bugs": {
+    "url": "https://github.com/relaylabs/scorenami/issues"
+  },
+  "engines": {
+    "node": "^6.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "postinstall": "lerna bootstrap",
+    "precommit": "lint-staged",
+    "lint": "eslint \"packages/**/*.js\"",
+    "prettier-all": "prettier --write --print-width 100 --single-quote \"packages/**/*.js\" \"scripts/**/*.js\"",
+    "prettier-all-debug-check": "prettier --debug-check --print-width 100 --single-quote \"packages/**/*.js\" \"scripts/**/*.js\""
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write --print-width 100 --single-quote",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "chalk": "^2.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.7.2",
+    "eslint-config-prettier": "^2.6.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-prettier": "^2.3.1",
+    "husky": "^0.14.3",
+    "lerna": "^2.2.0",
+    "lint-staged": "^4.2.2",
+    "prettier": "^1.7.0"
+  }
+}

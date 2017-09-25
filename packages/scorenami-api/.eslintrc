@@ -1,0 +1,32 @@
+extends:
+  - eslint:recommended
+  - plugin:node/recommended
+  - prettier
+plugins:
+  - node
+  - prettier
+parserOptions:
+  ecmaVersion: 2016
+env:
+  node: true
+  es6: true
+rules:
+  comma-dangle:
+    - warn
+    - never
+  max-len:
+    - warn
+    -
+      code: 100
+  no-console: warn
+  no-unexpected-multiline: off
+  no-unused-vars: warn
+  object-curly-spacing:
+    - warn
+    - always
+  prettier/prettier:
+    - warn
+    -
+      printWidth: 100
+      singleQuote: true
+      trailingComma: none
