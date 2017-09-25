@@ -4,6 +4,7 @@ const express = require('express');
 const { graphqlExpress, graphiqlExpress } = require('graphql-server-express');
 const { printSchema } = require('graphql/utilities/schemaPrinter');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const chalk = require('chalk');
 const logger = require('morgan');
 
@@ -13,7 +14,19 @@ const PORT = process.env.PORT || 8000;
 
 const app = express();
 
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+const whitelist = process.env.ORIGINS ? process.env.ORIGINS.split(',') : [];
+
+var corsOptions = {
+  origin: (origin, callback) => {
+    if (!whitelist.length || whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+
+app.use('/graphql', cors(corsOptions), bodyParser.json(), graphqlExpress({ schema }));
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(
