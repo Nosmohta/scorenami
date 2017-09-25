@@ -33,3 +33,45 @@ query {
   }
 }
 ```
+
+### Game
+
+```js
+{
+  game(game_id: 2017092100) {
+    id
+    home {
+      ...gameTeamDetails
+    }
+    away{
+      ...gameTeamDetails
+    }
+    day
+    month
+    time
+    seasonType
+    week
+    year
+    final
+    homeScore
+    awayScore
+  }
+}
+```
+
+* Fragment for team details of game
+```js
+fragment gameTeamDetails on TeamGameInformation {
+  team
+  totfd
+  totyds
+  pyds
+  ryds
+  pen
+  penyds
+  trnovr
+  pt
+  ptyds
+  ptavg
+}
+```

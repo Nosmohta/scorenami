@@ -17,12 +17,12 @@ const getSchedule = args => {
     })
     .then(response => {
       const schedule = [];
-
+      console.log("RESPONSE", response.data)
       response.data.forEach(game => {
         schedule.push({
           id: game.id,
-          home: game.home,
-          away: game.away,
+          home: { team: game.home },
+          away: { team: game.away },
           day: game.day,
           month: game.month,
           time: game.time,
