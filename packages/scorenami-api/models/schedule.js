@@ -20,7 +20,7 @@ const getSchedule = args => {
 
       response.data.forEach(game => {
         schedule.push({
-          id: game.id,
+          gameId: game.id,
           home: { team: game.home },
           away: { team: game.away },
           day: game.day,

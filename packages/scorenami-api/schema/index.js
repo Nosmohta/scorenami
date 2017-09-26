@@ -8,6 +8,7 @@ const seasonTypeSchema = require('./season-type-schema');
 const statsSchema = require('./stats-schema');
 
 const gameResolvers = require('../resolvers/game-resolvers');
+const playsResolvers = require('../resolvers/plays-resolvers');
 const scheduleResolvers = require('../resolvers/schedule-resolvers');
 
 const rootSchema = `
@@ -16,6 +17,8 @@ const rootSchema = `
   }
 
   type Query {
+    game(gameId: Int!): Game!
+    plays(options: SearchPlayInput!): [Play]
     schedule(
       year: Int,
       month: Int,
@@ -25,13 +28,12 @@ const rootSchema = `
       week: Int,
       final: Boolean
     ): [Game!]!
-    game(game_id: Int!): Game!
   }
 `;
 
 const schema = [rootSchema, driveSchema, gameSchema, playSchema, seasonTypeSchema, statsSchema];
 
-const resolvers = merge(gameResolvers, scheduleResolvers);
+const resolvers = merge(gameResolvers, playsResolvers, scheduleResolvers);
 
 module.exports = makeExecutableSchema({
   typeDefs: schema,

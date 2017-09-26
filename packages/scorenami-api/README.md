@@ -18,7 +18,7 @@ Scorenami GraphQL API server.
 ```js
 {
   schedule(year: 2017, week: 3, seasonType: REG) {
-    id
+    gameId
     home {
       team
     }
@@ -100,6 +100,21 @@ fragment gameTeamDetails on TeamGameDetails {
       name
       inside20
     }
+  }
+}
+```
+
+### Plays
+```js
+{
+  plays(options: { gameId: 2017092100, quarter: 2, down:4 }) {
+    gameId
+    playId
+    quarter
+    down
+    time
+    description
+    note
   }
 }
 ```

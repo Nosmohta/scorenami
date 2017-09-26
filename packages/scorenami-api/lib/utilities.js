@@ -3,16 +3,15 @@ const axios = require('axios');
 const config = require('../config/config');
 
 const APICall = (resource, args) => {
-  const composedQuery = Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, args);
+  const APIargs = toSnakeCase(args)
+  const composedQuery = Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, APIargs);
 
   return axios.post(`${config['apiBaseUrl']}/${resource}`, composedQuery)
 }
 
 const translateGameSchema = (dataAPI) => {
-  //console.log("API DATA: ", dataAPI.home.stats);
-
   const dataGraphQL = dataAPI
-  dataGraphQL.id = dataAPI.nfl_id
+  dataGraphQL.gameId = dataAPI.nfl_id || dataAPI.id
   dataGraphQL.seasonType = dataAPI.season_type
   dataGraphQL.awayScore = dataAPI.home_score
   dataGraphQL.awayScore = dataAPI.away_score
@@ -63,7 +62,8 @@ const translateStatsSchema = (dataAPI) => {
 
 const translatePlaySchema = (dataAPI) => {
   const dataGraphQL = dataAPI
-  dataGraphQL.id = dataAPI.nfl_id
+  dataGraphQL.gameId = dataAPI.nfl_id
+  dataGraphQL.playId = dataAPI.play_id
 
   return dataGraphQL
 }
@@ -91,6 +91,26 @@ const statsTransform = (dataAPI, idPropName) => {
   })
 
   return dataGraphQL
+}
+
+const toSnakeCase = (args) => {
+  const oldKeys = Object.keys(args)
+  const hashMap = oldKeys.map(oldKey => {
+    return {
+      [oldKey]: oldKey.replace(/([A-Z])/g, ($1) => { return "_" + $1.toLowerCase() } )
+    }
+  })
+  let newArgs = {};
+
+  hashMap
+      .map(keyValue => {
+        let key = Object.keys(keyValue)[0]
+        let newKey = keyValue[key]
+        return { [newKey]: args[key] }
+      })
+      .map(KV => { Object.assign(newArgs, KV)});
+
+  return newArgs
 }
 
 module.exports = {

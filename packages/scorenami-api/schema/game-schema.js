@@ -1,6 +1,6 @@
 const schema = `
   type Game {
-    id: Int!
+    gameId: Int!
     home: TeamGameDetails!
     away: TeamGameDetails!
     day: Int!
