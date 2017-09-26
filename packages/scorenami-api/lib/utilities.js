@@ -4,6 +4,7 @@ const config = require('../config/config');
 
 const APICall = (resource, args) => {
   const APIargs = toSnakeCase(args)
+  console.log("SNAKE ARGS:", APIargs)
   const composedQuery = Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, APIargs);
 
   return axios.post(`${config['apiBaseUrl']}/${resource}`, composedQuery)
@@ -11,12 +12,12 @@ const APICall = (resource, args) => {
 
 const translateGameSchema = (dataAPI) => {
   const dataGraphQL = dataAPI
-  dataGraphQL.gameId = dataAPI.nfl_id || dataAPI.id
-  dataGraphQL.seasonType = dataAPI.season_type
-  dataGraphQL.awayScore = dataAPI.home_score
-  dataGraphQL.awayScore = dataAPI.away_score
-  dataGraphQL.home = translateTeamGameDetailSchema(dataAPI.home)
-  dataGraphQL.away = translateTeamGameDetailSchema(dataAPI.away)
+  dataGraphQL.gameId = dataAPI.nfl_id || dataAPI.nfl_game_id || dataAPI.id
+  dataGraphQL.seasonType = dataAPI.season_type ? dataAPI.season_type : null
+  dataGraphQL.awayScore = dataAPI.home_score ? dataAPI.home_score : null
+  dataGraphQL.awayScore = dataAPI.away_score ? dataAPI.away_score : null
+  dataGraphQL.home = dataGraphQL.home ? translateTeamGameDetailSchema(dataAPI.home) : null
+  dataGraphQL.away = dataGraphQL.away ? translateTeamGameDetailSchema(dataAPI.away) : null
 
   return dataGraphQL
 }

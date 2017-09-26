@@ -6,10 +6,12 @@ const gameSchema = require('./game-schema');
 const playSchema = require('./play-schema');
 const seasonTypeSchema = require('./season-type-schema');
 const statsSchema = require('./stats-schema');
+const teamSchema = require('./team-schema');
 
 const gameResolvers = require('../resolvers/game-resolvers');
 const playsResolvers = require('../resolvers/plays-resolvers');
 const scheduleResolvers = require('../resolvers/schedule-resolvers');
+const teamResolvers = require('../resolvers/team-resolvers');
 
 const rootSchema = `
   schema {
@@ -28,12 +30,13 @@ const rootSchema = `
       week: Int,
       final: Boolean
     ): [Game!]!
+    team(options: searchTeamInput): [TeamGameSummary]
   }
 `;
 
-const schema = [rootSchema, driveSchema, gameSchema, playSchema, seasonTypeSchema, statsSchema];
+const schema = [rootSchema, driveSchema, gameSchema, playSchema, seasonTypeSchema, statsSchema, teamSchema];
 
-const resolvers = merge(gameResolvers, playsResolvers, scheduleResolvers);
+const resolvers = merge(gameResolvers, playsResolvers, scheduleResolvers, teamResolvers);
 
 module.exports = makeExecutableSchema({
   typeDefs: schema,

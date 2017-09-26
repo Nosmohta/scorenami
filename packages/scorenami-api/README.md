@@ -118,3 +118,24 @@ fragment gameTeamDetails on TeamGameDetails {
   }
 }
 ```
+
+### Team
+```js
+{
+  team(options: { team: BAL, year: 2016, opponent: CIN }) {
+    gameId
+    team
+    opponent
+    totfd
+    totyds
+    pyds
+    ryds
+    pen
+    penyds
+    trnovr
+    pt
+    ptyds
+    ptavg
+  }
+}
+```
