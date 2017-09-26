@@ -17,7 +17,7 @@ const getSchedule = args => {
     })
     .then(response => {
       const schedule = [];
-      console.log("RESPONSE", response.data)
+
       response.data.forEach(game => {
         schedule.push({
           id: game.id,

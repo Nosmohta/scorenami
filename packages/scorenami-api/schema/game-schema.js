@@ -30,43 +30,6 @@ const schema = `
     drives: [Drive!]
     stats: GameStats!
   }
-
-  type GameStats {
-    passing: Int
-    rushing: Int
-    kick_return: Int
-    punt_return: Int
-    receiving: Int
-    fumbles: Int
-    kicking: Int
-    defense: Int
-    punting: Int
-  }
-
-  type Drive {
-    driveId: Int
-    quarter: Int
-    result: String
-    penyds: Int
-    ydsgained: Int
-    numplays: Int
-    postime: Int
-    plays: [Play!]
-  }
-
-  type Play {
-    quarter: Int
-    down: Int
-    time: Int
-    yrdln: String
-    ydstogo: Int
-    ydsnet: Int
-    posteam: String
-    opponent: String
-    description: String
-    note: String
-  }
-
 `;
 
 module.exports = schema;
