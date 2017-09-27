@@ -2,12 +2,12 @@ const chalk = require('chalk');
 
 const config = require('../config/config');
 
-const { PFARequest, translateGameSchema } = require('../lib/utilities');
+const { PFARequest } = require('../lib/pro-football-api');
 
 const getGame = args => {
   return PFARequest('game', args)
     .then(response => {
-      return translateGameSchema(response.data);
+      return response;
     })
     .catch(error => {
       console.log(chalk.red(error));

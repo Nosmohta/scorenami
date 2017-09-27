@@ -6,7 +6,17 @@ const PFARequest = (resource, args) => {
   const APIargs = toSnakeCase(args);
   const composedQuery = Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, APIargs);
 
-  return axios.post(`${config['apiBaseUrl']}/${resource}`, composedQuery);
+  return axios.post(`${config['apiBaseUrl']}/${resource}`, composedQuery).then(response => {
+    return translateResponseData(resource, response.data);
+  });
+};
+
+const translateResponseData = (resource, responseData) => {
+  const resourceTranslatorMap = {
+    game: translateGameSchema
+  };
+
+  return resourceTranslatorMap[resource](responseData);
 };
 
 const translateGameSchema = dataAPI => {
@@ -87,7 +97,7 @@ const translateStatTypesSchema = statsDataAPI => {
     const statsData = statsDataAPI[playId];
     propNameTransformMap
       .map(propNamePair => {
-        let key = Object.keys(propNamePair)[0];
+        const key = Object.keys(propNamePair)[0];
         const newPropName = propNamePair[key];
         return { [newPropName]: statsData[key] };
       })
