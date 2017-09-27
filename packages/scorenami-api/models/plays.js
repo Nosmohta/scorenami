@@ -3,19 +3,13 @@ const chalk = require('chalk');
 
 const config = require('../config/config');
 
-const { PFARequest, translatePlaySchema } = require('../lib/utilities');
+const { PFARequest } = require('../lib/pro-football-api');
 
 const getPlays = args => {
-  return PFARequest('plays', args)
-    .then(response => {
-      return response.data.map(play => {
-        return translatePlaySchema(play);
-      });
-    })
-    .catch(error => {
-      console.log(chalk.red(error));
-      return new Error(error);
-    });
+  return PFARequest('plays', args.options).catch(error => {
+    console.log(chalk.red(error));
+    return new Error(error);
+  });
 };
 
 module.exports = getPlays;

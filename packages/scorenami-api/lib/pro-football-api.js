@@ -6,7 +6,18 @@ const PFARequest = (resource, args) => {
   const APIargs = toSnakeCase(args);
   const composedQuery = Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, APIargs);
 
-  return axios.post(`${config['apiBaseUrl']}/${resource}`, composedQuery);
+  return axios.post(`${config['apiBaseUrl']}/${resource}`, composedQuery).then(response => {
+    return translateResponseData(resource, response.data);
+  });
+};
+
+const translateResponseData = (resource, responseData) => {
+  const resourceTranslatorMap = {
+    game: translateGameSchema,
+    plays: translatePlaysSchema
+  };
+
+  return resourceTranslatorMap[resource](responseData);
 };
 
 const translateGameSchema = dataAPI => {
@@ -37,13 +48,13 @@ const translateTeamGameDetailSchema = dataAPI => {
 
 const translateDriveSchema = dataAPI => {
   const drive = dataAPI;
-  drive.id = dataAPI.nfl_id;
   drive.driveId = dataAPI.drive_id;
   const plays = [];
 
   for (play in dataAPI.plays) {
     plays.push(dataAPI.plays[play]);
   }
+
   drive.gameId = dataAPI.nfl_id;
   drive.playId = dataAPI.play_id;
   drive.plays = plays;
@@ -65,9 +76,14 @@ const translateAllStatSchemas = dataAPI => {
   };
 };
 
+const translatePlaysSchema = playsDataAPI => {
+  return playsDataAPI.map(play => {
+    return translatePlaySchema(play);
+  });
+};
+
 const translatePlaySchema = dataAPI => {
   const play = dataAPI;
-  play.id = dataAPI.nfl_id;
   play.gameId = dataAPI.nfl_id;
   play.playId = dataAPI.play_id;
 
@@ -87,7 +103,7 @@ const translateStatTypesSchema = statsDataAPI => {
     const statsData = statsDataAPI[playId];
     propNameTransformMap
       .map(propNamePair => {
-        let key = Object.keys(propNamePair)[0];
+        const key = Object.keys(propNamePair)[0];
         const newPropName = propNamePair[key];
         return { [newPropName]: statsData[key] };
       })
