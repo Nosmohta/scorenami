@@ -13,7 +13,8 @@ const PFARequest = (resource, args) => {
 
 const translateResponseData = (resource, responseData) => {
   const resourceTranslatorMap = {
-    game: translateGameSchema
+    game: translateGameSchema,
+    plays: translatePlaysSchema
   };
 
   return resourceTranslatorMap[resource](responseData);
@@ -47,13 +48,13 @@ const translateTeamGameDetailSchema = dataAPI => {
 
 const translateDriveSchema = dataAPI => {
   const drive = dataAPI;
-  drive.id = dataAPI.nfl_id;
   drive.driveId = dataAPI.drive_id;
   const plays = [];
 
   for (play in dataAPI.plays) {
     plays.push(dataAPI.plays[play]);
   }
+
   drive.gameId = dataAPI.nfl_id;
   drive.playId = dataAPI.play_id;
   drive.plays = plays;
@@ -75,9 +76,14 @@ const translateAllStatSchemas = dataAPI => {
   };
 };
 
+const translatePlaysSchema = playsDataAPI => {
+  return playsDataAPI.map(play => {
+    return translatePlaySchema(play);
+  });
+};
+
 const translatePlaySchema = dataAPI => {
   const play = dataAPI;
-  play.id = dataAPI.nfl_id;
   play.gameId = dataAPI.nfl_id;
   play.playId = dataAPI.play_id;
 
