@@ -2,123 +2,134 @@ const axios = require('axios');
 
 const config = require('../config/config');
 
-const APICall = (resource, args) => {
-  const APIargs = toSnakeCase(args)
-  console.log("SNAKE ARGS:", APIargs)
+const PFARequest = (resource, args) => {
+  const APIargs = toSnakeCase(args);
   const composedQuery = Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, APIargs);
 
-  return axios.post(`${config['apiBaseUrl']}/${resource}`, composedQuery)
-}
+  return axios.post(`${config['apiBaseUrl']}/${resource}`, composedQuery);
+};
 
-const translateGameSchema = (dataAPI) => {
-  const dataGraphQL = dataAPI
-  dataGraphQL.gameId = dataAPI.nfl_id || dataAPI.nfl_game_id || dataAPI.id
-  dataGraphQL.seasonType = dataAPI.season_type ? dataAPI.season_type : null
-  dataGraphQL.awayScore = dataAPI.home_score ? dataAPI.home_score : null
-  dataGraphQL.awayScore = dataAPI.away_score ? dataAPI.away_score : null
-  dataGraphQL.home = dataGraphQL.home ? translateTeamGameDetailSchema(dataAPI.home) : null
-  dataGraphQL.away = dataGraphQL.away ? translateTeamGameDetailSchema(dataAPI.away) : null
+const translateGameSchema = dataAPI => {
+  const game = dataAPI;
+  game.gameId = dataAPI.nfl_id || dataAPI.nfl_game_id || dataAPI.id;
+  game.seasonType = dataAPI.season_type ? dataAPI.season_type : null;
+  game.awayScore = dataAPI.home_score ? dataAPI.home_score : null;
+  game.awayScore = dataAPI.away_score ? dataAPI.away_score : null;
+  game.home = dataAPI.home ? translateTeamGameDetailSchema(dataAPI.home) : null;
+  game.away = dataAPI.away ? translateTeamGameDetailSchema(dataAPI.away) : null;
 
-  return dataGraphQL
-}
+  return game;
+};
 
-const translateTeamGameDetailSchema = (dataAPI) => {
-  const dataGraphQL = dataAPI
-  const drives = []
+const translateTeamGameDetailSchema = dataAPI => {
+  const teamGame = dataAPI;
+  const drives = [];
+
   for (drive in dataAPI.drives) {
-    drives.push(translateDriveSchema(dataAPI.drives[drive]))
+    drives.push(translateDriveSchema(dataAPI.drives[drive]));
   }
-  dataGraphQL.drives = drives
-  dataGraphQL.stats = translateStatsSchema(dataAPI.stats)
 
-  return dataGraphQL
-}
+  teamGame.drives = drives;
+  teamGame.stats = translateAllStatSchemas(dataAPI.stats);
 
-const translateDriveSchema = (dataAPI) => {
-  const dataGraphQL = dataAPI
-  dataGraphQL.id = dataAPI.nfl_id
-  dataGraphQL.driveId = dataAPI.drive_id
-  const plays = []
+  return teamGame;
+};
+
+const translateDriveSchema = dataAPI => {
+  const drive = dataAPI;
+  drive.id = dataAPI.nfl_id;
+  drive.driveId = dataAPI.drive_id;
+  const plays = [];
+
   for (play in dataAPI.plays) {
-    plays.push(dataAPI.plays[play])
+    plays.push(dataAPI.plays[play]);
   }
-  dataGraphQL.plays = plays
+  drive.gameId = dataAPI.nfl_id;
+  drive.playId = dataAPI.play_id;
+  drive.plays = plays;
 
-  return dataGraphQL
-}
+  return drive;
+};
 
-const translateStatsSchema = (dataAPI) => {
+const translateAllStatSchemas = dataAPI => {
   return {
-    passing: statsTransform(dataAPI.passing, 'playNumber'),
-    rushing: statsTransform(dataAPI.rushing, 'playNumber'),
-    kickReturn: statsTransform(dataAPI.kick_return, 'playNumber'),
-    puntReturn: statsTransform(dataAPI.punt_return, 'playNumber'),
-    receiving: statsTransform(dataAPI.receiving, 'playNumber'),
-    fumbles: statsTransform(dataAPI.fumbles, 'playNumber'),
-    kicking: statsTransform(dataAPI.kicking, 'playNumber'),
-    defense: statsTransform(dataAPI.defense, 'playNumber'),
-    punting: statsTransform(dataAPI.punting, 'playNumber'),
-  }
-}
+    passing: translateStatTypesSchema(dataAPI.passing),
+    rushing: translateStatTypesSchema(dataAPI.rushing),
+    kickReturn: translateStatTypesSchema(dataAPI.kick_return),
+    puntReturn: translateStatTypesSchema(dataAPI.punt_return),
+    receiving: translateStatTypesSchema(dataAPI.receiving),
+    fumbles: translateStatTypesSchema(dataAPI.fumbles),
+    kicking: translateStatTypesSchema(dataAPI.kicking),
+    defense: translateStatTypesSchema(dataAPI.defense),
+    punting: translateStatTypesSchema(dataAPI.punting)
+  };
+};
 
-const translatePlaySchema = (dataAPI) => {
-  const dataGraphQL = dataAPI
-  dataGraphQL.gameId = dataAPI.nfl_id
-  dataGraphQL.playId = dataAPI.play_id
+const translatePlaySchema = dataAPI => {
+  const play = dataAPI;
+  play.id = dataAPI.nfl_id;
+  play.gameId = dataAPI.nfl_id;
+  play.playId = dataAPI.play_id;
 
-  return dataGraphQL
-}
+  return play;
+};
 
-const statsTransform = (dataAPI, idPropName) => {
-  const topKeys = Object.keys(dataAPI)
-  const propNames = topKeys.length > 0 ? Object.keys(dataAPI[topKeys[0]]) : []
-  const hashMap = propNames.map(oldPropName => {
+const translateStatTypesSchema = statsDataAPI => {
+  const playIds = Object.keys(statsDataAPI);
+  const propNames = playIds.length > 0 ? Object.keys(statsDataAPI[playIds[0]]) : [];
+  const propNameTransformMap = propNames.map(propName => {
     return {
-      [oldPropName]: oldPropName.replace(/_([a-z,0-9])/g, (g) => g[1].toUpperCase())
-    }
-  })
-  const dataGraphQL = topKeys.map(topKey => {
-    let newObj = {};
-    let oldObj = dataAPI[topKey]
-    hashMap
-      .map(keyValue => {
-        let key = Object.keys(keyValue)[0]
-        let newKey = keyValue[key]
-        return { [newKey]: oldObj[key] }
+      [propName]: propName.replace(/_([a-z,0-9])/g, g => g[1].toUpperCase())
+    };
+  });
+  const stats = playIds.map(playId => {
+    const statData = {};
+    const statsData = statsDataAPI[playId];
+    propNameTransformMap
+      .map(propNamePair => {
+        let key = Object.keys(propNamePair)[0];
+        const newPropName = propNamePair[key];
+        return { [newPropName]: statsData[key] };
       })
-      .map(KV => { Object.assign(newObj, KV)})
+      .map(stat => {
+        Object.assign(statData, stat);
+      });
 
-    return Object.assign(newObj, { [idPropName]: topKey })
-  })
+    return Object.assign(statData, { playNumber: playId });
+  });
 
-  return dataGraphQL
-}
+  return stats;
+};
 
-const toSnakeCase = (args) => {
-  const oldKeys = Object.keys(args)
+const toSnakeCase = args => {
+  const oldKeys = Object.keys(args);
   const hashMap = oldKeys.map(oldKey => {
     return {
-      [oldKey]: oldKey.replace(/([A-Z])/g, ($1) => { return "_" + $1.toLowerCase() } )
-    }
-  })
+      [oldKey]: oldKey.replace(/([A-Z])/g, $1 => {
+        return '_' + $1.toLowerCase();
+      })
+    };
+  });
   let newArgs = {};
 
   hashMap
-      .map(keyValue => {
-        let key = Object.keys(keyValue)[0]
-        let newKey = keyValue[key]
-        return { [newKey]: args[key] }
-      })
-      .map(KV => { Object.assign(newArgs, KV)});
+    .map(keyValue => {
+      let key = Object.keys(keyValue)[0];
+      let newKey = keyValue[key];
+      return { [newKey]: args[key] };
+    })
+    .map(KV => {
+      Object.assign(newArgs, KV);
+    });
 
-  return newArgs
-}
+  return newArgs;
+};
 
 module.exports = {
-  APICall,
+  PFARequest,
   translateGameSchema,
   translateDriveSchema,
   translatePlaySchema,
-  translateStatsSchema,
-  translateTeamGameDetailSchema,
- }
+  translateAllStatSchemas,
+  translateTeamGameDetailSchema
+};

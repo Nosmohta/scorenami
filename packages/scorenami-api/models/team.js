@@ -3,16 +3,16 @@ const chalk = require('chalk');
 
 const config = require('../config/config');
 
-const { APICall, translateGameSchema } = require('../lib/utilities');
+const { PFARequest, translateGameSchema } = require('../lib/utilities');
 
 const getTeam = args => {
-  return APICall('teams', args)
+  return PFARequest('teams', args)
     .then(response => {
-      console.log("RAW RESPONSE: ", response.data)
+      console.log('RAW RESPONSE: ', response.data);
       let games = response.data.map(game => {
-        return translateGameSchema(game)
-      })
-      console.log("TEAM RESPONSE: ", response.data)
+        return translateGameSchema(game);
+      });
+      console.log('TEAM RESPONSE: ', response.data);
       return games;
     })
     .catch(error => {

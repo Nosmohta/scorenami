@@ -1,13 +1,11 @@
-const axios = require('axios');
 const chalk = require('chalk');
 
 const config = require('../config/config');
 
-const { APICall, translateGameSchema } = require('../lib/utilities');
+const { PFARequest, translateGameSchema } = require('../lib/utilities');
 
 const getGame = args => {
-
-  return APICall('game', args)
+  return PFARequest('game', args)
     .then(response => {
       return translateGameSchema(response.data);
     })
