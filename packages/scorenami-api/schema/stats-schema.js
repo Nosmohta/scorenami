@@ -73,7 +73,7 @@ type KickingStats {
   attempts: Int
   made: Int
   yards: Int
-  percent: Int,
+  percent: Int
   xpAttempt: Int
   xpMade: Int
   xpMissed: Int
