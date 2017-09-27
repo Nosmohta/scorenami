@@ -88,7 +88,7 @@ type DefenceStats {
   assisted_tackles: Int
   sacks: Int
   interceptions: Int
-  forced_fumbles: Int
+  forcedFumbles: Int
 }
 
 type PuntingStats {
