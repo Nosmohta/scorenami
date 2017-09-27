@@ -27,7 +27,8 @@ const rootSchema = `
       seasonType: SeasonType,
       week: Int,
       final: Boolean
-    ): [Game!]!
+    ): [GameSummary!]!
+    game(gameId: Int!): Game!
   }
 `;
 

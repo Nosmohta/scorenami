@@ -30,12 +30,8 @@ const ScheduleQuery = gql`
   query {
     schedule(year: 2017, week: 3, seasonType: REG) {
       gameId
-      home {
-        team
-      }
-      away {
-        team
-      }
+      home
+      away
       day
       month
       time

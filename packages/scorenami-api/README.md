@@ -19,12 +19,8 @@ Scorenami GraphQL API server.
 {
   schedule(year: 2017, week: 3, seasonType: REG) {
     gameId
-    home {
-      team
-    }
-    away {
-      team
-    }
+    home
+    away
     day
     month
     time
@@ -36,19 +32,20 @@ Scorenami GraphQL API server.
     awayScore
   }
 }
+
 ```
 
 ### Game
 
 ```js
 {
-  game(game_id: 2017092100) {
-    id
+  game(gameId: 2017092100) {
+    gameId
     home {
-      ...gameTeamDetails
+      ...teamGameDetails
     }
-    away{
-      ...gameTeamDetails
+    away {
+      ...teamGameDetails
     }
     day
     month
@@ -59,47 +56,6 @@ Scorenami GraphQL API server.
     final
     homeScore
     awayScore
-  }
-}
-```
-
-* Fragment for team details of game
-```js
-fragment gameTeamDetails on TeamGameDetails {
-  team
-  totfd
-  totyds
-  pyds
-  ryds
-  pen
-  penyds
-  trnovr
-  pt
-  ptyds
-  ptavg
-  drives {
-    driveId
-    quarter
-    result
-    plays {
-      description
-    }
-  }
-  stats {
-    passing {
-      playNumber
-      name
-      attempts
-      twoPointAttempts
-    }
-    receiving {
-      name
-    }
-    punting {
-      playNumber
-      name
-      inside20
-    }
   }
 }
 ```
@@ -107,14 +63,162 @@ fragment gameTeamDetails on TeamGameDetails {
 ### Plays
 ```js
 {
-  plays(options: { gameId: 2017092100, quarter: 2, down:4 }) {
+  plays(options: {gameId: 2017092100, quarter: 2, down: 4}) {
     gameId
     playId
+    driveId
     quarter
     down
     time
+    yardLine
+    yardsToGo
+    yardsNet
+    possessionTeam
+    opponent
     description
     note
   }
+}
+```
+
+## Fragments:
+```js
+fragment teamGameDetails on TeamGame {
+  team
+  opponent
+  totalDrives
+  totalYards
+  passingYards
+  runningYards
+  penalties
+  penaltyYards
+  turnovers
+  punts
+  puntingYards
+  puntingAverageYards
+  drives {
+    ...drivesDetail
+  }
+  stats {
+    ...allStats
+  }
+}
+
+fragment allStats on GameStats {
+  passing {
+    playNumber
+    name
+    attempts
+    completions
+    yards
+    touchdowns
+    interceptions
+    twoPointAttempts
+    twoPointMakes
+  }
+  rushing {
+    playNumber
+    name
+    attempts
+    yards
+    touchdowns
+    long
+    longTouchdown
+    twoPointAttempts
+    twoPointMakes
+  }
+  kickReturn {
+    playNumber
+    name
+    returns
+    average
+    touchdowns
+    long
+    longTouchdown
+  }
+  puntReturn {
+    playNumber
+    name
+    returns
+    average
+    touchdowns
+    long
+    longTouchdown
+  }
+  receiving {
+    playNumber
+    name
+    receptions
+    yards
+    touchdowns
+    long
+    longTouchdown
+    twoPointAttempts
+    twoPointMakes
+  }
+  fumbles {
+    playNumber
+    name
+    totalFumbles
+    recovered
+    teamRecovered
+    yards
+    fumblesLost
+  }
+  kicking {
+    playNumber
+    name
+    attempts
+    made
+    yards
+    percent
+    extraPointsAttempt
+    extraPointsMade
+    extraPointsMissed
+    extraPointsBlocked
+    extraPointsTotal
+  }
+  defense {
+    playNumber
+    name
+    tackles
+    assistedTackles
+    sacks
+    interceptions
+    forcedFumbles
+  }
+  punting {
+    playNumber
+    name
+    punts
+    yards
+    average
+    insideTwenty
+    long
+  }
+}
+
+fragment drivesDetail on Drive {
+  driveId
+  quarter
+  result
+  penaltyYards
+  plays {
+    ...playsDetail
+  }
+}
+
+fragment playsDetail on Play {
+  gameId
+  quarter
+  down
+  time
+  yardLine
+  yardsToGo
+  yardsNet
+  possessionTeam
+  opponent
+  description
+  note
 }
 ```

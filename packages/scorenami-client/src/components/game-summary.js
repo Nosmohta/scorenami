@@ -29,24 +29,24 @@ const GameSummary = props => {
         <div className="game-summary-team" style={gameSummaryTeamStyles}>
           <span className="game-summary-logo" style={logoStyles}>
             <img
-              className={`game-summary-logo-${away.team.toLowerCase()}`}
-              src={getTeamLogo(away.team)}
-              alt={away.team.toLowerCase()}
+              className={`game-summary-logo-${away.toLowerCase()}`}
+              src={getTeamLogo(away)}
+              alt={away.toLowerCase()}
               width="20px"
             />
           </span>
-          {nflTeams[away.team].displayName} <strong>{awayScore}</strong>
+          {nflTeams[away].displayName} <strong>{awayScore}</strong>
         </div>
         <div className="game-summary-team" style={gameSummaryTeamStyles}>
           <span className="game-summary-logo" style={logoStyles}>
             <img
-              className={`game-summary-logo-${home.team.toLowerCase()}`}
-              src={getTeamLogo(home.team)}
-              alt={home.team.toLowerCase()}
+              className={`game-summary-logo-${home.toLowerCase()}`}
+              src={getTeamLogo(home)}
+              alt={home.toLowerCase()}
               width="20px"
             />
           </span>
-          {nflTeams[home.team].displayName} <strong>{homeScore}</strong>
+          {nflTeams[home].displayName} <strong>{homeScore}</strong>
         </div>
         {final && <span style={finalStyles}>Final</span>}
       </ListItem>
