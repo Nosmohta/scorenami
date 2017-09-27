@@ -3,10 +3,10 @@ const schema = `
     quarter: Int
     down: Int
     time: Int
-    yrdln: String
-    ydstogo: Int
-    ydsnet: Int
-    posteam: String
+    yardLine: String
+    yardsToGo: Int
+    yardsNet: Int
+    possessionTeam: String
     opponent: String
     description: String
     note: String

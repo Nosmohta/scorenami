@@ -74,21 +74,21 @@ type KickingStats {
   made: Int
   yards: Int
   percent: Int
-  xpAttempt: Int
-  xpMade: Int
-  xpMissed: Int
-  xpBlocked: Int
-  xpTotal: Int
+  extraPointsAttempt: Int
+  extraPointsMade: Int
+  extraPointsMissed: Int
+  extraPointsBlocked: Int
+  extraPointsTotal: Int
 }
 
 type DefenceStats {
   playNumber: String
   name: String
   tackles: Int
-  assisted_tackles: Int
+  assistedTackles: Int
   sacks: Int
   interceptions: Int
-  forced_fumbles: Int
+  forcedFumbles: Int
 }
 
 type PuntingStats {
@@ -97,7 +97,7 @@ type PuntingStats {
   punts: Int
   yards: Int
   average: Int
-  inside20: Int
+  insideTwenty: Int
   long: Int
 }
 `;

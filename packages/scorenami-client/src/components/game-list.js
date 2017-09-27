@@ -18,7 +18,7 @@ const GameList = props => {
   return (
     <List className="game-list">
       {props.data.schedule.map(game => (
-        <Link to={`/game/${game.id}`} key={game.id} style={linkStyles}>
+        <Link to={`/game/${game.gameId}`} key={game.gameId} style={linkStyles}>
           <GameSummary data={game} />
         </Link>
       ))}
@@ -29,7 +29,7 @@ const GameList = props => {
 const ScheduleQuery = gql`
   query {
     schedule(year: 2017, week: 3, seasonType: REG) {
-      id
+      gameId
       home
       away
       day

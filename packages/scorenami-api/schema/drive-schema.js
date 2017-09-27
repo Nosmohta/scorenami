@@ -3,10 +3,10 @@ const schema = `
     driveId: Int
     quarter: Int
     result: String
-    penyds: Int
-    ydsgained: Int
-    numplays: Int
-    postime: Int
+    penaltyYards: Int
+    yardsGained: Int
+    numberOfPlays: Int
+    possessionTime: Int
     plays: [Play!]
   }
 `;
