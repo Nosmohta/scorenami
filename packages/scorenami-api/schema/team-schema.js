@@ -1,24 +1,8 @@
 const schema = `
-  type TeamGameSummary{
-    gameId: Int
-    team: TeamNames
-    opponent: TeamNames
-    totfd: Int
-    totyds: Int
-    pyds: Int
-    ryds: Int
-    pen: Int
-    penyds: Int
-    trnovr: Int
-    pt: Int
-    ptyds: Int
-    ptavg: Int
-  }
-
   input searchTeamInput {
     gameId: Int
-    team: TeamNames!
-    opponent: TeamNames
+    team: TeamName!
+    opponent: TeamName
     year: Int
     month: Int
     week: Int
@@ -28,9 +12,41 @@ const schema = `
     final: Boolean
   }
 
-  enum TeamNames {
+  enum TeamName {
+    NoName
+    ARI
+    ATL
     BAL
+    BUF
+    CAR
+    CHI
     CIN
+    CLE
+    DAL
+    DEN
+    DET
+    GB
+    HOU
+    IND
+    JAC
+    JAX
+    KC
+    LA
+    LAC
+    MIA
+    MIN
+    NE
+    NO
+    NYG
+    NYJ
+    OAK
+    PHI
+    PIT
+    SEA
+    SF
+    TB
+    TEN
+    WAS
   }
 `;
 

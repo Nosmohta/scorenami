@@ -2,14 +2,15 @@ const schema = `
   type Play {
     gameId: Int
     playId: Int
+    driveId: Int
     quarter: Int
     down: Int
     time: Int
-    yrdln: String
-    ydstogo: Int
-    ydsnet: Int
-    posteam: String
-    opponent: String
+    yardLine: String
+    yardsToGo: Int
+    yardsNet: Int
+    possessionTeam: TeamName
+    opponent: TeamName
     description: String
     note: String
   }
@@ -26,8 +27,8 @@ const schema = `
     time: Int
     seasonType: SeasonType
     final: Boolean
-    team: String
-    opponent: String
+    team: TeamName
+    opponent: TeamName
   }
 `;
 

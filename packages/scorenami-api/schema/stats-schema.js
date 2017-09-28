@@ -2,17 +2,17 @@ const schema = `
 type GameStats {
   passing: [PassingStats]
   rushing: [RushingStats]
-  kickReturn: [ReturnStats]
-  puntReturn: [ReturnStats]
+  kickReturn: [KickReturnStats]
+  puntReturn: [PuntReturnStats]
   receiving: [ReceivingStats]
   fumbles: [FumblesStats]
   kicking: [KickingStats]
-  defense: [DefenceStats]
+  defense: [defenseStats]
   punting: [PuntingStats]
 }
 
 type PassingStats {
-  playNumber: String
+  playerId: String
   name: String
   attempts: Int
   completions: Int
@@ -24,7 +24,7 @@ type PassingStats {
 }
 
 type RushingStats {
-  playNumber: String
+  playerId: String
   name: String
   attempts: Int
   yards: Int
@@ -35,8 +35,18 @@ type RushingStats {
   twoPointMakes: Int
 }
 
-type ReturnStats {
-  playNumber: String
+type KickReturnStats {
+  playerId: String
+  name: String
+  returns: Int
+  average: Int
+  touchdowns: Int
+  long: Int
+  longTouchdown: Int
+}
+
+type PuntReturnStats {
+  playerId: String
   name: String
   returns: Int
   average: Int
@@ -46,7 +56,7 @@ type ReturnStats {
 }
 
 type ReceivingStats {
-  playNumber: String
+  playerId: String
   name: String
   receptions: Int
   yards: Int
@@ -58,7 +68,7 @@ type ReceivingStats {
 }
 
 type FumblesStats {
-  playNumber: String
+  playerId: String
   name: String
   totalFumbles: Int
   recovered: Int
@@ -68,36 +78,36 @@ type FumblesStats {
 }
 
 type KickingStats {
-  playNumber: String
+  playerId: String
   name: String
   attempts: Int
   made: Int
   yards: Int
   percent: Int
-  xpAttempt: Int
-  xpMade: Int
-  xpMissed: Int
-  xpBlocked: Int
-  xpTotal: Int
+  extraPointsAttempt: Int
+  extraPointsMade: Int
+  extraPointsMissed: Int
+  extraPointsBlocked: Int
+  extraPointsTotal: Int
 }
 
-type DefenceStats {
-  playNumber: String
+type defenseStats {
+  playerId: String
   name: String
   tackles: Int
-  assisted_tackles: Int
+  assistedTackles: Int
   sacks: Int
   interceptions: Int
   forcedFumbles: Int
 }
 
 type PuntingStats {
-  playNumber: String
+  playerId: String
   name: String
   punts: Int
   yards: Int
   average: Int
-  inside20: Int
+  insideTwenty: Int
   long: Int
 }
 `;

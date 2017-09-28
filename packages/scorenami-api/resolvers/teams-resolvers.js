@@ -1,8 +1,8 @@
-const getTeam = require('../models/team');
+const getTeam = require('../models/teams');
 
 const resolvers = {
   Query: {
-    team(obj, args, context) {
+    teams(obj, args, context) {
       return getTeam(args);
     }
   }
