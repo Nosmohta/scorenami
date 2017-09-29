@@ -16,7 +16,7 @@ const translateResponseData = (resource, responseData) => {
   const resourceTranslatorMap = {
     game: translateGameSchema,
     plays: translatePlaysSchema,
-    schedule: translateGameSummariesSchema
+    schedule: translateGameSummarySchema
   };
 
   return resourceTranslatorMap[resource](responseData);
@@ -37,17 +37,17 @@ const transformPropNames = (data, type) => {
 
 const translateGameSchema = dataAPI => {
   const game = transformPropNames(dataAPI, 'game');
-  game.home = translateTeamGameDetailSchema(dataAPI.home);
-  game.away = translateTeamGameDetailSchema(dataAPI.away);
+  game.home = translateTeamGameSchema(dataAPI.home);
+  game.away = translateTeamGameSchema(dataAPI.away);
 
   return game;
 };
 
-const translateGameSummariesSchema = dataAPI => {
+const translateGameSummarySchema = dataAPI => {
   return dataAPI.map(gameSummary => transformPropNames(gameSummary, 'gameSummary'));
 };
 
-const translateTeamGameDetailSchema = dataAPI => {
+const translateTeamGameSchema = dataAPI => {
   const teamGame = transformPropNames(dataAPI, 'teamGame');
   const drives = [];
 

@@ -65,10 +65,10 @@ Scorenami GraphQL API server.
 fragment teamGameDetails on TeamGame {
   team
   opponent
-  totalDrives
+  totalFirstDowns
   totalYards
   passingYards
-  runningYards
+  rushingYards
   penalties
   penaltyYards
   turnovers
@@ -151,11 +151,11 @@ fragment allStats on GameStats {
     made
     yards
     percent
-    extraPointsAttempt
-    extraPointsMade
-    extraPointsMissed
-    extraPointsBlocked
-    extraPointsTotal
+    extraPointAttempt
+    extraPointMade
+    extraPointMissed
+    extraPointBlocked
+    extraPointTotal
   }
   defense {
     playNumber
@@ -199,4 +199,3 @@ fragment playsDetail on Play {
   description
   note
 }
-```
