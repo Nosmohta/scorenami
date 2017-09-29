@@ -7,7 +7,7 @@ import App from './components/app';
 import registerServiceWorker from './registerServiceWorker';
 
 const networkInterface = createNetworkInterface({
-  uri: process.env.NODE_ENV === 'production' ? 'http://localhost:8000/graphql' : '/graphql'
+  uri: '/graphql'
 });
 
 const client = new ApolloClient({

@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const path = require('path');
 const express = require('express');
 const { graphqlExpress, graphiqlExpress } = require('graphql-server-express');
 const { printSchema } = require('graphql/utilities/schemaPrinter');
@@ -40,6 +41,10 @@ if (process.env.NODE_ENV !== 'production') {
     res.set('Content-Type', 'text/plain');
     res.send(printSchema(schema));
   });
+}
+
+if (process.env.NODE_ENV === 'production') {
+  app.use('/', express.static(path.resolve(__dirname, '..', 'scorenami-client', 'build')));
 }
 
 app.use(bodyParser.urlencoded({ extended: true }));
