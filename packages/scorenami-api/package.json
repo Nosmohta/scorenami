@@ -9,7 +9,8 @@
     "node": "^6.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "start": "nodemon server.js",
+    "test": "jest"
   },
   "dependencies": {
     "axios": "^0.16.2",
@@ -23,5 +24,9 @@
     "graphql-tools": "^1.2.3",
     "lodash": "^4.17.4",
     "morgan": "^1.8.2"
+  },
+  "devDependencies": {
+    "jest": "^21.2.1",
+    "nodemon": "^1.12.1"
   }
 }
