@@ -32,7 +32,6 @@ Scorenami GraphQL API server.
     awayScore
   }
 }
-
 ```
 
 ### Game
@@ -199,3 +198,4 @@ fragment playsDetail on Play {
   description
   note
 }
+```

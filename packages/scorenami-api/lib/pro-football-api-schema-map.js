@@ -1,4 +1,4 @@
-const schemaMap = {
+const proFootballApiSchemaMap = {
   drive: {
     drive_id: 'driveId',
     quarter: 'quarter',
@@ -149,4 +149,4 @@ const schemaMap = {
   }
 };
 
-module.exports = { schemaMap };
+module.exports = proFootballApiSchemaMap;

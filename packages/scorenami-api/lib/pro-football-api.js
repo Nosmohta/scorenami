@@ -1,13 +1,14 @@
 const axios = require('axios');
 
 const config = require('../config/config');
-const { schemaMap } = require('../config/schema-map');
+const camelCaseToSnakeCase = require('../utils/camel-case-to-snake-case');
+const proFootballApiSchemaMap = require('./pro-football-api-schema-map');
 
 const PFARequest = (resource, args) => {
-  const APIArgs = toSnakeCase(args);
-  const composedQuery = Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, APIArgs);
+  const apiArgs = camelCaseToSnakeCase(args);
+  const query = Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, apiArgs);
 
-  return axios.post(`${config['apiBaseUrl']}/${resource}`, composedQuery).then(response => {
+  return axios.post(`${config.proFootballApiUrl}/${resource}`, query).then(response => {
     return translateResponseData(resource, response.data);
   });
 };
@@ -23,64 +24,63 @@ const translateResponseData = (resource, responseData) => {
 };
 
 const transformPropNames = (data, type) => {
-  const mapping = schemaMap[type];
-  const APIPropNames = Object.keys(schemaMap[type]);
-  const translated = {};
+  let transformedData = {};
 
-  APIPropNames.map(propName => {
-    const translatedPropName = mapping[propName];
-    Object.assign(translated, { [translatedPropName]: data[propName] });
+  Object.keys(proFootballApiSchemaMap[type]).map(propName => {
+    const transformedPropName = proFootballApiSchemaMap[type][propName];
+    Object.assign(transformedData, { [transformedPropName]: data[propName] });
   });
 
-  return translated;
+  return transformedData;
 };
 
-const translateGameSchema = dataAPI => {
-  const game = transformPropNames(dataAPI, 'game');
-  game.home = translateTeamGameSchema(dataAPI.home);
-  game.away = translateTeamGameSchema(dataAPI.away);
+const translateGameSchema = gameData => {
+  const game = transformPropNames(gameData, 'game');
+
+  game.home = translateTeamGameSchema(gameData.home);
+  game.away = translateTeamGameSchema(gameData.away);
 
   return game;
 };
 
-const translateGameSummarySchema = dataAPI => {
-  return dataAPI.map(gameSummary => transformPropNames(gameSummary, 'gameSummary'));
+const translateGameSummarySchema = gameSummaryData => {
+  return gameSummaryData.map(gameSummary => transformPropNames(gameSummary, 'gameSummary'));
 };
 
-const translateTeamGameSchema = dataAPI => {
-  const teamGame = transformPropNames(dataAPI, 'teamGame');
+const translateTeamGameSchema = teamGameData => {
+  const teamGame = transformPropNames(teamGameData, 'teamGame');
   const drives = [];
 
-  for (const drive in dataAPI.drives) {
-    drives.push(translateDriveSchema(dataAPI.drives[drive]));
+  for (const drive in teamGameData.drives) {
+    drives.push(translateDriveSchema(teamGameData.drives[drive]));
   }
 
   teamGame.drives = drives;
-  teamGame.stats = translateAllStatSchemas(dataAPI.stats);
+  teamGame.stats = translateAllStatSchemas(teamGameData.stats);
 
   return teamGame;
 };
 
-const translateAllStatSchemas = dataAPI => {
+const translateAllStatSchemas = statsData => {
   return {
-    passing: translateStatTypesSchema(dataAPI.passing, 'passing'),
-    rushing: translateStatTypesSchema(dataAPI.rushing, 'rushing'),
-    kickReturn: translateStatTypesSchema(dataAPI.kick_return, 'return'),
-    puntReturn: translateStatTypesSchema(dataAPI.punt_return, 'return'),
-    receiving: translateStatTypesSchema(dataAPI.receiving, 'receiving'),
-    fumbles: translateStatTypesSchema(dataAPI.fumbles, 'fumbles'),
-    kicking: translateStatTypesSchema(dataAPI.kicking, 'kicking'),
-    defense: translateStatTypesSchema(dataAPI.defense, 'defense'),
-    punting: translateStatTypesSchema(dataAPI.punting, 'punting')
+    passing: translateStatTypesSchema(statsData.passing, 'passing'),
+    rushing: translateStatTypesSchema(statsData.rushing, 'rushing'),
+    kickReturn: translateStatTypesSchema(statsData.kick_return, 'return'),
+    puntReturn: translateStatTypesSchema(statsData.punt_return, 'return'),
+    receiving: translateStatTypesSchema(statsData.receiving, 'receiving'),
+    fumbles: translateStatTypesSchema(statsData.fumbles, 'fumbles'),
+    kicking: translateStatTypesSchema(statsData.kicking, 'kicking'),
+    defense: translateStatTypesSchema(statsData.defense, 'defense'),
+    punting: translateStatTypesSchema(statsData.punting, 'punting')
   };
 };
 
-const translateDriveSchema = dataAPI => {
-  const drive = transformPropNames(dataAPI, 'drive');
+const translateDriveSchema = driveData => {
+  const drive = transformPropNames(driveData, 'drive');
   const plays = [];
 
-  for (const play in dataAPI.plays) {
-    plays.push(dataAPI.plays[play]);
+  for (const play in driveData.plays) {
+    plays.push(driveData.plays[play]);
   }
 
   drive.plays = translatePlaysSchema(plays);
@@ -88,16 +88,15 @@ const translateDriveSchema = dataAPI => {
   return drive;
 };
 
-const translatePlaysSchema = playsDataAPI => {
-  return playsDataAPI.map(play => {
+const translatePlaysSchema = playsData => {
+  return playsData.map(play => {
     return transformPropNames(play, 'play');
   });
 };
 
-const translateStatTypesSchema = (statsDataAPI, type) => {
-  const playIds = Object.keys(statsDataAPI);
-  const stats = playIds.map(playId => {
-    const statData = transformPropNames(statsDataAPI[playId], type);
+const translateStatTypesSchema = (statsData, type) => {
+  const stats = Object.keys(statsData).map(playId => {
+    const statData = transformPropNames(statsData[playId], type);
 
     return Object.assign(statData, { playNumber: playId });
   });
@@ -105,26 +104,4 @@ const translateStatTypesSchema = (statsDataAPI, type) => {
   return stats;
 };
 
-const toSnakeCase = args => {
-  const keys = Object.keys(args);
-  const argsMapping = keys.map(key => {
-    return {
-      [key]: key.replace(/([A-Z])/g, $1 => {
-        return '_' + $1.toLowerCase();
-      })
-    };
-  });
-  const newArgs = {};
-
-  argsMapping.map(KV => {
-    const key = Object.keys(KV)[0];
-    const newProp = KV[key];
-    Object.assign(newArgs, { [newProp]: args[key] });
-  });
-
-  return newArgs;
-};
-
-module.exports = {
-  PFARequest
-};
+module.exports = PFARequest;
