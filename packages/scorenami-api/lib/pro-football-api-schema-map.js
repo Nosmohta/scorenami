@@ -1,4 +1,4 @@
-const schemaMap = {
+const proFootballApiSchemaMap = {
   drive: {
     drive_id: 'driveId',
     quarter: 'quarter',
@@ -40,10 +40,10 @@ const schemaMap = {
   teamGame: {
     team: 'team',
     opponent: 'opponent',
-    totfd: 'totalDrives',
+    totfd: 'totalFirstDowns',
     totyds: 'totalYards',
     pyds: 'passingYards',
-    ryds: 'runningYards',
+    ryds: 'rushingYards',
     pen: 'penalties',
     penyds: 'penaltyYards',
     trnovr: 'turnovers',
@@ -126,11 +126,11 @@ const schemaMap = {
     made: 'made',
     yards: 'yards',
     percent: 'percent',
-    xp_attempt: 'extraPointsAttempt',
-    xp_made: 'extraPointsMade',
-    xp_missed: 'extraPointsMissed',
-    xp_blocked: 'extraPointsBlocked',
-    xp_total: 'extraPointsTotal'
+    xp_attempt: 'extraPointAttempt',
+    xp_made: 'extraPointMade',
+    xp_missed: 'extraPointMissed',
+    xp_blocked: 'extraPointBlocked',
+    xp_total: 'extraPointTotal'
   },
   defense: {
     playNumber: 'playNumber',
@@ -152,4 +152,4 @@ const schemaMap = {
   }
 };
 
-module.exports = { schemaMap };
+module.exports = proFootballApiSchemaMap;
