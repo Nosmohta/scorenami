@@ -132,24 +132,32 @@ const translatePlaysSchema = playsDataAPI => {
 };
 
 const translateAllStatSchemas = dataAPI => {
+  const {
+    passing,
+    rushing,
+    kick_return,
+    punt_return,
+    receiving,
+    fumbles,
+    kicking,
+    defense,
+    punting
+  } = dataAPI;
+
   return {
-    passing: dataAPI.passing ? translateStatTypesSchema(dataAPI.passing, 'passing') : [],
-    rushing: dataAPI.rushing ? translateStatTypesSchema(dataAPI.rushing, 'rushing') : [],
-    kickReturn: dataAPI.kick_return
-      ? translateStatTypesSchema(dataAPI.kick_return, 'kickReturn')
-      : [],
-    puntReturn: dataAPI.punt_return
-      ? translateStatTypesSchema(dataAPI.punt_return, 'puntReturn')
-      : [],
-    receiving: dataAPI.receiving ? translateStatTypesSchema(dataAPI.receiving, 'receiving') : [],
-    fumbles: dataAPI.fumbles ? translateStatTypesSchema(dataAPI.fumbles, 'fumbles') : [],
-    kicking: dataAPI.kicking ? translateStatTypesSchema(dataAPI.kicking, 'kicking') : [],
-    defense: dataAPI.defense ? translateStatTypesSchema(dataAPI.defense, 'defense') : [],
-    punting: dataAPI.punting ? translateStatTypesSchema(dataAPI.punting, 'punting') : []
+    passing: passing ? translateStatSchema(passing, 'passing') : [],
+    rushing: rushing ? translateStatSchema(rushing, 'rushing') : [],
+    kickReturn: kick_return ? translateStatSchema(kick_return, 'kickReturn') : [],
+    puntReturn: punt_return ? translateStatSchema(punt_return, 'puntReturn') : [],
+    receiving: receiving ? translateStatSchema(receiving, 'receiving') : [],
+    fumbles: fumbles ? translateStatSchema(fumbles, 'fumbles') : [],
+    kicking: kicking ? translateStatSchema(kicking, 'kicking') : [],
+    defense: defense ? translateStatSchema(defense, 'defense') : [],
+    punting: punting ? translateStatSchema(punting, 'punting') : []
   };
 };
 
-const translateStatTypesSchema = (statsDataAPI, type) => {
+const translateStatSchema = (statsDataAPI, type) => {
   const playerIds = Object.keys(statsDataAPI);
   const stats = playerIds.map(playerId => {
     const statData = transformPropNames(statsDataAPI[playerId], type);
