@@ -5,6 +5,7 @@ const driveSchema = require('./drive-schema');
 const gameSchema = require('./game-schema');
 const playSchema = require('./play-schema');
 const seasonTypeSchema = require('./season-type-schema');
+const scheduleSchema = require('./schedule-schema');
 const statsSchema = require('./stats-schema');
 
 const gameResolvers = require('../resolvers/game-resolvers');
@@ -18,21 +19,21 @@ const rootSchema = `
 
   type Query {
     game(gameId: Int!): Game!
-    plays(options: SearchPlayInput!): [Play]
-    schedule(
-      year: Int,
-      month: Int,
-      day: Int,
-      time: Int,
-      seasonType: SeasonType,
-      week: Int,
-      final: Boolean
-    ): [GameSummary!]!
+    plays(options: PlayOptionInput!): [Play]
+    schedule(options: ScheduleOptionInput!): [GameSummary!]!
     game(gameId: Int!): Game!
   }
 `;
 
-const schema = [rootSchema, driveSchema, gameSchema, playSchema, seasonTypeSchema, statsSchema];
+const schema = [
+  rootSchema,
+  driveSchema,
+  gameSchema,
+  playSchema,
+  seasonTypeSchema,
+  scheduleSchema,
+  statsSchema
+];
 
 const resolvers = merge(gameResolvers, playsResolvers, scheduleResolvers);
 

@@ -17,7 +17,7 @@ Scorenami GraphQL API server.
 
 ```js
 {
-  schedule(year: 2017, week: 3, seasonType: REG) {
+  schedule(options: {year: 2017, week: 3, seasonType: REG}) {
     gameId
     home
     away
