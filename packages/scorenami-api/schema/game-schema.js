@@ -32,10 +32,10 @@ const schema = `
   type TeamGame {
     team: TeamName!
     opponent: TeamName
-    totalDrives: Int
+    totalFirstDowns: Int
     totalYards: Int
     passingYards: Int
-    runningYards: Int
+    rushingYards: Int
     penalties: Int
     penaltyYards: Int
     turnovers: Int

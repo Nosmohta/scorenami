@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 
-const { PFARequest } = require('../lib/pro-football-api');
+const PFARequest = require('../lib/pro-football-api');
 
 const getPlayerStats = args => {
   return PFARequest('players', args).catch(error => {

@@ -1,3 +1,3 @@
 module.exports = {
-  apiBaseUrl: 'https://profootballapi.com'
+  proFootballApiUrl: 'https://profootballapi.com'
 };

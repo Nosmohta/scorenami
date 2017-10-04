@@ -17,7 +17,7 @@ Scorenami GraphQL API server.
 
 ```js
 {
-  schedule(year: 2017, week: 3, seasonType: REG) {
+  schedule(options: {year: 2017, week: 3, seasonType: REG}) {
     gameId
     home
     away
@@ -106,10 +106,10 @@ Scorenami GraphQL API server.
 fragment teamGameDetails on TeamGame {
   team
   opponent
-  totalDrives
+  totalFirstDowns
   totalYards
   passingYards
-  runningYards
+  rushingYards
   penalties
   penaltyYards
   turnovers
@@ -192,11 +192,11 @@ fragment allStats on GameStats {
     made
     yards
     percent
-    extraPointsAttempt
-    extraPointsMade
-    extraPointsMissed
-    extraPointsBlocked
-    extraPointsTotal
+    extraPointAttempt
+    extraPointMade
+    extraPointMissed
+    extraPointBlocked
+    extraPointTotal
   }
   defense {
     playerId

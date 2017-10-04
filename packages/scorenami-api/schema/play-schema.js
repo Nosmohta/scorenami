@@ -15,7 +15,7 @@ const schema = `
     note: String
   }
 
-  input SearchPlayInput {
+  input PlayOptionInput {
     gameId: Int
     playerId: String
     quarter: Int

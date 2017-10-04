@@ -1,18 +1,21 @@
 const axios = require('axios');
 
 const config = require('../config/config');
-const { schemaMap } = require('../config/schema-map');
+const camelCaseToSnakeCase = require('../utils/camel-case-to-snake-case');
+const proFootballApiSchemaMap = require('./pro-football-api-schema-map');
 
 const PFARequest = (resource, args) => {
-  return axios.post(`${config['apiBaseUrl']}/${resource}`, composePFAQuery(args)).then(response => {
-    return translateResponseData(resource, response.data);
-  });
+  return axios
+    .post(`${config['proFootballApiUrl']}/${resource}`, composePFAQuery(args))
+    .then(response => {
+      return translateResponseData(resource, response.data);
+    });
 };
 
 const composePFAQuery = args => {
-  const APIOptions = args.options ? toSnakeCase(args.options) : {};
+  const APIOptions = args.options ? camelCaseToSnakeCase(args.options) : {};
   delete args.options;
-  const APIArgs = toSnakeCase(args);
+  const APIArgs = camelCaseToSnakeCase(args);
 
   return Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, APIArgs, APIOptions);
 };
@@ -23,23 +26,21 @@ const translateResponseData = (resource, responseData) => {
     plays: translatePlaysSchema,
     players: translatePlayerStatsSchema,
     teams: translateTeamGameSummariesSchema,
-    schedule: translateGameSummariesSchema
+    schedule: translateGameSummarySchema
   };
 
   return resourceTranslatorMap[resource](responseData);
 };
 
 const transformPropNames = (data, type) => {
-  const mapping = schemaMap[type];
-  const APIPropNames = Object.keys(schemaMap[type]);
-  const translated = {};
+  let transformedData = {};
 
-  APIPropNames.map(propName => {
-    const translatedPropName = mapping[propName];
-    Object.assign(translated, { [translatedPropName]: data[propName] });
+  Object.keys(proFootballApiSchemaMap[type]).map(propName => {
+    const transformedPropName = proFootballApiSchemaMap[type][propName];
+    Object.assign(transformedData, { [transformedPropName]: data[propName] });
   });
 
-  return translated;
+  return transformedData;
 };
 
 const translateTeamGameSummariesSchema = games => {
@@ -48,28 +49,29 @@ const translateTeamGameSummariesSchema = games => {
   });
 };
 
-const translateGameSchema = dataAPI => {
-  const game = transformPropNames(dataAPI, 'game');
-  game.home = translateTeamGameSchema(dataAPI.home);
-  game.away = translateTeamGameSchema(dataAPI.away);
+const translateGameSchema = gameData => {
+  const game = transformPropNames(gameData, 'game');
+
+  game.home = translateTeamGameSchema(gameData.home);
+  game.away = translateTeamGameSchema(gameData.away);
 
   return game;
 };
 
-const translateGameSummariesSchema = dataAPI => {
-  return dataAPI.map(gameSummary => transformPropNames(gameSummary, 'gameSummary'));
+const translateGameSummarySchema = gameSummaryData => {
+  return gameSummaryData.map(gameSummary => transformPropNames(gameSummary, 'gameSummary'));
 };
 
-const translateTeamGameSchema = dataAPI => {
-  const teamGame = transformPropNames(dataAPI, 'teamGame');
+const translateTeamGameSchema = teamGameData => {
+  const teamGame = transformPropNames(teamGameData, 'teamGame');
   const drives = [];
 
-  for (const drive in dataAPI.drives) {
-    drives.push(translateDriveSchema(dataAPI.drives[drive]));
+  for (const drive in teamGameData.drives) {
+    drives.push(translateDriveSchema(teamGameData.drives[drive]));
   }
 
   teamGame.drives = drives;
-  teamGame.stats = translateAllStatSchemas(dataAPI.stats);
+  teamGame.stats = translateAllStatSchemas(teamGameData.stats);
 
   return teamGame;
 };
@@ -107,12 +109,12 @@ const translatePlayerGameStatsSchema = (gameStatsAPI, gameId, playerId) => {
   return Object.assign(playerGameStats, { gameId: gameId });
 };
 
-const translateDriveSchema = dataAPI => {
-  const drive = transformPropNames(dataAPI, 'drive');
+const translateDriveSchema = driveData => {
+  const drive = transformPropNames(driveData, 'drive');
   const plays = [];
 
-  for (const play in dataAPI.plays) {
-    plays.push(dataAPI.plays[play]);
+  for (const play in driveData.plays) {
+    plays.push(driveData.plays[play]);
   }
 
   drive.plays = translatePlaysSchema(plays);
@@ -157,26 +159,4 @@ const translateStatTypesSchema = (statsDataAPI, type) => {
   return stats;
 };
 
-const toSnakeCase = args => {
-  const keys = Object.keys(args);
-  const argsMapping = keys.map(key => {
-    return {
-      [key]: key.replace(/([A-Z])/g, $1 => {
-        return '_' + $1.toLowerCase();
-      })
-    };
-  });
-  const newArgs = {};
-
-  argsMapping.map(KV => {
-    const key = Object.keys(KV)[0];
-    const newProp = KV[key];
-    Object.assign(newArgs, { [newProp]: args[key] });
-  });
-
-  return newArgs;
-};
-
-module.exports = {
-  PFARequest
-};
+module.exports = PFARequest;

@@ -28,7 +28,7 @@ const GameList = props => {
 
 const ScheduleQuery = gql`
   query {
-    schedule(year: 2017, week: 3, seasonType: REG) {
+    schedule(options: { year: 2017, week: 3, seasonType: REG }) {
       gameId
       home
       away

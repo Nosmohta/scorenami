@@ -6,6 +6,7 @@ const gameSchema = require('./game-schema');
 const playSchema = require('./play-schema');
 const playerSchema = require('./player-schema');
 const seasonTypeSchema = require('./season-type-schema');
+const scheduleSchema = require('./schedule-schema');
 const statsSchema = require('./stats-schema');
 const teamSchema = require('./team-schema');
 
@@ -22,21 +23,13 @@ const rootSchema = `
 
   type Query {
     game(gameId: Int!): Game!
-    plays(options: SearchPlayInput!): [Play]
+    plays(options: PlayOptionInput!): [Play]
     playerStats(
       playerName: String!,
       statsType: StatsTypes!,
       options: PlayerStatsInput
     ): PlayerStats
-    schedule(
-      year: Int,
-      month: Int,
-      day: Int,
-      time: Int,
-      seasonType: SeasonType,
-      week: Int,
-      final: Boolean
-    ): [GameSummary!]!
+    schedule(options: ScheduleOptionInput!): [GameSummary!]!
     teams(options: searchTeamInput): [TeamGameSummary]
   }
 `;
@@ -48,6 +41,7 @@ const schema = [
   playSchema,
   playerSchema,
   seasonTypeSchema,
+  scheduleSchema,
   statsSchema,
   teamSchema
 ];

@@ -84,11 +84,11 @@ type KickingStats {
   made: Int
   yards: Int
   percent: Int
-  extraPointsAttempt: Int
-  extraPointsMade: Int
-  extraPointsMissed: Int
-  extraPointsBlocked: Int
-  extraPointsTotal: Int
+  extraPointAttempt: Int
+  extraPointMade: Int
+  extraPointMissed: Int
+  extraPointBlocked: Int
+  extraPointTotal: Int
 }
 
 type defenseStats {
