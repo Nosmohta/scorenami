@@ -2,11 +2,11 @@ const chalk = require('chalk');
 
 const PFARequest = require('../lib/pro-football-api');
 
-const getSchedule = args => {
-  return PFARequest('schedule', args.options).catch(error => {
+const getPlays = args => {
+  return PFARequest('plays', args.options).catch(error => {
     console.log(chalk.red(error));
     return new Error(error);
   });
 };
 
-module.exports = getSchedule;
+module.exports = getPlays;

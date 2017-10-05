@@ -54,6 +54,9 @@ const proFootballApiSchemaMap = {
     stats: 'stats'
   },
   play: {
+    nfl_id: 'gameId',
+    play_id: 'playId',
+    drive_id: 'driveId',
     quarter: 'quarter',
     down: 'down',
     time: 'time',

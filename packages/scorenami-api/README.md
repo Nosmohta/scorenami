@@ -17,7 +17,7 @@ Scorenami GraphQL API server.
 
 ```js
 {
-  schedule(year: 2017, week: 3, seasonType: REG) {
+  schedule(options: {year: 2017, week: 3, seasonType: REG}) {
     gameId
     home
     away
@@ -55,6 +55,27 @@ Scorenami GraphQL API server.
     final
     homeScore
     awayScore
+  }
+}
+```
+
+### Plays
+```js
+{
+  plays(options: {gameId: 2017092100, quarter: 2, down: 4}) {
+    gameId
+    playId
+    driveId
+    quarter
+    down
+    time
+    yardLine
+    yardsToGo
+    yardsNet
+    possessionTeam
+    opponent
+    description
+    note
   }
 }
 ```
@@ -187,6 +208,7 @@ fragment drivesDetail on Drive {
 }
 
 fragment playsDetail on Play {
+  gameId
   quarter
   down
   time
