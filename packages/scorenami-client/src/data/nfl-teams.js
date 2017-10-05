@@ -202,12 +202,26 @@ const nflTeams = {
     fullName: 'Seattle Seahawks',
     displayName: 'Seattle'
   },
+  SD: {
+    shortName: 'SD',
+    cityName: 'SD',
+    teamName: 'SD',
+    fullName: 'SD',
+    displayName: 'SD'
+  },
   SF: {
     shortName: 'SF',
     cityName: 'San Francisco',
     teamName: '49ers',
     fullName: 'San Francisco 49ers',
     displayName: 'San Francisco'
+  },
+  STL: {
+    shortName: 'STL',
+    cityName: 'STL',
+    teamName: 'STL',
+    fullName: 'STL',
+    displayName: 'STL'
   },
   TB: {
     shortName: 'TB',

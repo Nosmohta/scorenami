@@ -43,7 +43,9 @@ const schema = `
     PHI
     PIT
     SEA
+    SD
     SF
+    STL
     TB
     TEN
     WAS
