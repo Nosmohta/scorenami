@@ -59,7 +59,25 @@ const translateGameSchema = gameData => {
 };
 
 const translateGameSummarySchema = gameSummaryData => {
-  return gameSummaryData.map(gameSummary => transformPropNames(gameSummary, 'gameSummary'));
+  const gameSummaries = gameSummaryData.map(gameSummary =>
+    transformPropNames(gameSummary, 'gameSummary')
+  );
+  return groupAndSortGameSummaries(gameSummaries);
+};
+
+const groupAndSortGameSummaries = gameSummaries => {
+  console.log(gameSummaries);
+
+  const completedGames = [];
+  const currentGames = [];
+  const scheduledGames = [];
+
+  gameSummaries.map(game => {
+    // push into appropriate []
+  });
+  //sort each array by date
+  //merge arrays lodash?
+  return gameSummaries;
 };
 
 const translateTeamGameSchema = teamGameData => {
