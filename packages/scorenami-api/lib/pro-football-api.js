@@ -6,18 +6,19 @@ const proFootballApiSchemaMap = require('./pro-football-api-schema-map');
 
 const PFARequest = (resource, args) => {
   return axios
-    .post(`${config['proFootballApiUrl']}/${resource}`, composePFAQuery(args))
+    .post(`${config.proFootballApiUrl}/${resource}`, composePFAQuery(args))
     .then(response => {
       return translateResponseData(resource, response.data);
     });
 };
 
 const composePFAQuery = args => {
-  const APIOptions = args.options ? camelCaseToSnakeCase(args.options) : {};
-  delete args.options;
-  const APIArgs = camelCaseToSnakeCase(args);
+  const apiOptions = args.options ? camelCaseToSnakeCase(args.options) : {};
+  const apiArgs = camelCaseToSnakeCase(args);
 
-  return Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, APIArgs, APIOptions);
+  delete args.options;
+
+  return Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, apiArgs, apiOptions);
 };
 
 const translateResponseData = (resource, responseData) => {
@@ -25,7 +26,7 @@ const translateResponseData = (resource, responseData) => {
     game: translateGameSchema,
     plays: translatePlaysSchema,
     players: translatePlayerStatsSchema,
-    teams: translateTeamGameSummariesSchema,
+    teams: translateTeamGameSummarySchema,
     schedule: translateGameSummarySchema
   };
 
@@ -43,7 +44,7 @@ const transformPropNames = (data, type) => {
   return transformedData;
 };
 
-const translateTeamGameSummariesSchema = games => {
+const translateTeamGameSummarySchema = games => {
   return games.map(game => {
     return transformPropNames(game, 'teamGameSummary');
   });
@@ -76,19 +77,19 @@ const translateTeamGameSchema = teamGameData => {
   return teamGame;
 };
 
-const translatePlayerStatsSchema = dataAPI => {
+const translatePlayerStatsSchema = playerStatsData => {
   const playerStats = {};
-  const gameIds = Object.keys(dataAPI);
+  const gameIds = Object.keys(playerStatsData);
+
   playerStats.games = gameIds
     .map(gameId => {
-      const keys = Object.keys(dataAPI[gameId]);
+      const keys = Object.keys(playerStatsData[gameId]);
       const playerId = keys[0];
-      const dataShape = playerId.match('-') ? 'nested' : 'notNested';
 
-      if (dataShape === 'notNested') {
-        return;
+      if (playerId.includes('-')) {
+        return translatePlayerGameStatsSchema(playerStatsData[gameId], gameId, playerId);
       } else {
-        return translatePlayerGameStatsSchema(dataAPI[gameId], gameId, playerId);
+        return;
       }
     })
     .filter(stat => stat);
@@ -96,17 +97,18 @@ const translatePlayerStatsSchema = dataAPI => {
   return playerStats;
 };
 
-const translatePlayerGameStatsSchema = (gameStatsAPI, gameId, playerId) => {
-  const statTypes = Object.keys(gameStatsAPI[playerId]);
+const translatePlayerGameStatsSchema = (playerGameStatsData, gameId, playerId) => {
+  const statTypes = Object.keys(playerGameStatsData[playerId]);
   const playerGameStats = {};
+
   statTypes.map(statType => {
-    const statData = Object.assign(gameStatsAPI[playerId][statType], { playerId: playerId });
+    const statData = Object.assign(playerGameStatsData[playerId][statType], { playerId: playerId });
 
     const translatedStatData = { [statType]: transformPropNames(statData, statType) };
     Object.assign(playerGameStats, translatedStatData);
   });
 
-  return Object.assign(playerGameStats, { gameId: gameId });
+  return Object.assign({}, playerGameStats, { gameId: gameId });
 };
 
 const translateDriveSchema = driveData => {
@@ -122,16 +124,18 @@ const translateDriveSchema = driveData => {
   return drive;
 };
 
-const translatePlaysSchema = playsDataAPI => {
-  return playsDataAPI.map(playAPI => {
+const translatePlaysSchema = playsData => {
+  return playsData.map(playAPI => {
     const play = transformPropNames(playAPI, 'play');
-    play.possessionTeam = play.possessionTeam ? play.possessionTeam : 'NoName';
-    play.opponent = play.opponent ? play.opponent : 'NoName';
+
+    play.possessionTeam = play.possessionTeam ? play.possessionTeam : null;
+    play.opponent = play.opponent ? play.opponent : null;
+
     return play;
   });
 };
 
-const translateAllStatSchemas = dataAPI => {
+const translateAllStatSchemas = allStatsData => {
   const {
     passing,
     rushing,
@@ -142,7 +146,7 @@ const translateAllStatSchemas = dataAPI => {
     kicking,
     defense,
     punting
-  } = dataAPI;
+  } = allStatsData;
 
   return {
     passing: passing ? translateStatSchema(passing, 'passing') : [],
@@ -157,10 +161,10 @@ const translateAllStatSchemas = dataAPI => {
   };
 };
 
-const translateStatSchema = (statsDataAPI, type) => {
-  const playerIds = Object.keys(statsDataAPI);
+const translateStatSchema = (statsData, type) => {
+  const playerIds = Object.keys(statsData);
   const stats = playerIds.map(playerId => {
-    const statData = transformPropNames(statsDataAPI[playerId], type);
+    const statData = transformPropNames(statsData[playerId], type);
 
     return Object.assign(statData, { playerId: playerId });
   });

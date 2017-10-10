@@ -1,5 +1,5 @@
 const schema = `
-  input searchTeamInput {
+  input TeamOptionInput {
     gameId: Int
     team: TeamName!
     opponent: TeamName
@@ -13,7 +13,6 @@ const schema = `
   }
 
   enum TeamName {
-    NoName
     ARI
     ATL
     BAL

@@ -16,8 +16,8 @@ const schema = `
 
   type GameSummary {
     gameId: Int!
-    home: TeamName!
-    away: TeamName!
+    home: TeamName
+    away: TeamName
     day: Int!
     month: Int!
     time: Int!
@@ -30,7 +30,7 @@ const schema = `
   }
 
   type TeamGame {
-    team: TeamName!
+    team: TeamName
     opponent: TeamName
     totalFirstDowns: Int
     totalYards: Int
