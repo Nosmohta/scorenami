@@ -47,7 +47,7 @@ const proFootballApiSchemaMap = {
     nfl_game_id: 'gameId',
     team: 'team',
     opponent: 'opponent',
-    totfd: 'totalDrives',
+    totfd: 'totalFirstDowns',
     totyds: 'totalYards',
     pyds: 'passingYards',
     ryds: 'runningYards',

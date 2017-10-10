@@ -30,7 +30,7 @@ const rootSchema = `
       options: PlayerStatsInput
     ): PlayerStats
     schedule(options: ScheduleOptionInput!): [GameSummary!]!
-    teams(options: searchTeamInput): [TeamGameSummary]
+    teams(options: TeamOptionInput): [TeamGameSummary]
   }
 `;
 
