@@ -1,14 +1,4 @@
 const proFootballApiSchemaMap = {
-  drive: {
-    drive_id: 'driveId',
-    quarter: 'quarter',
-    result: 'result',
-    penyds: 'penaltyYards',
-    ydsgained: 'yardsGained',
-    numplays: 'numberOfPlays',
-    postime: 'possessionTime',
-    plays: 'plays'
-  },
   game: {
     nfl_id: 'gameId',
     home: 'home',
@@ -53,6 +43,31 @@ const proFootballApiSchemaMap = {
     drives: 'drives',
     stats: 'stats'
   },
+  teamGameSummary: {
+    nfl_game_id: 'gameId',
+    team: 'team',
+    opponent: 'opponent',
+    totfd: 'totalFirstDowns',
+    totyds: 'totalYards',
+    pyds: 'passingYards',
+    ryds: 'runningYards',
+    pen: 'penalties',
+    penyds: 'penaltyYards',
+    trnovr: 'turnovers',
+    pt: 'punts',
+    ptyds: 'puntingYards',
+    ptavg: 'puntingAverageYards'
+  },
+  drive: {
+    drive_id: 'driveId',
+    quarter: 'quarter',
+    result: 'result',
+    penyds: 'penaltyYards',
+    ydsgained: 'yardsGained',
+    numplays: 'numberOfPlays',
+    postime: 'possessionTime',
+    plays: 'plays'
+  },
   play: {
     nfl_id: 'gameId',
     play_id: 'playId',
@@ -69,7 +84,7 @@ const proFootballApiSchemaMap = {
     note: 'note'
   },
   passing: {
-    playNumber: 'playNumber',
+    playerId: 'playerId',
     name: 'name',
     attempts: 'attempts',
     completions: 'completions',
@@ -80,7 +95,7 @@ const proFootballApiSchemaMap = {
     two_point_makes: 'twoPointMakes'
   },
   rushing: {
-    playNumber: 'playNumber',
+    playerId: 'playerId',
     name: 'name',
     attempts: 'attempts',
     yards: 'yards',
@@ -90,8 +105,17 @@ const proFootballApiSchemaMap = {
     two_point_attempts: 'twoPointAttempts',
     two_point_makes: 'twoPointMakes'
   },
-  return: {
-    playNumber: 'playNumber',
+  kickReturn: {
+    playerId: 'playerId',
+    name: 'name',
+    returns: 'returns',
+    average: 'average',
+    touchdowns: 'touchdowns',
+    long: 'long',
+    long_touchdown: 'longTouchdown'
+  },
+  puntReturn: {
+    playerId: 'playerId',
     name: 'name',
     returns: 'returns',
     average: 'average',
@@ -100,7 +124,7 @@ const proFootballApiSchemaMap = {
     long_touchdown: 'longTouchdown'
   },
   receiving: {
-    playNumber: 'playNumber',
+    playerId: 'playerId',
     name: 'name',
     receptions: 'receptions',
     yards: 'yards',
@@ -111,7 +135,7 @@ const proFootballApiSchemaMap = {
     two_point_makes: 'twoPointMakes'
   },
   fumbles: {
-    playNumber: 'playNumber',
+    playerId: 'playerId',
     name: 'name',
     total_fumbles: 'totalFumbles',
     recovered: 'recovered',
@@ -120,7 +144,7 @@ const proFootballApiSchemaMap = {
     fumbles_lost: 'fumblesLost'
   },
   kicking: {
-    playNumber: 'playNumber',
+    playerId: 'playerId',
     name: 'name',
     attempts: 'attempts',
     made: 'made',
@@ -133,7 +157,7 @@ const proFootballApiSchemaMap = {
     xp_total: 'extraPointTotal'
   },
   defense: {
-    playNumber: 'playNumber',
+    playerId: 'playerId',
     name: 'name',
     tackles: 'tackles',
     assisted_tackles: 'assistedTackles',
@@ -142,7 +166,7 @@ const proFootballApiSchemaMap = {
     forced_fumbles: 'forcedFumbles'
   },
   punting: {
-    playNumber: 'playNumber',
+    playerId: 'playerId',
     name: 'name',
     punts: 'punts',
     yards: 'yards',

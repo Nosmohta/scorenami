@@ -35,7 +35,6 @@ Scorenami GraphQL API server.
 ```
 
 ### Game
-
 ```js
 {
   game(gameId: 2017092100) {
@@ -80,7 +79,29 @@ Scorenami GraphQL API server.
 }
 ```
 
-## Fragments:
+### Team
+```js
+{
+  team(options: { team: BAL, year: 2016, opponent: CIN }) {
+    gameId
+    team
+    opponent
+    totalDrives
+    totalYards
+    passingYards
+    runningYards
+    penalties
+    penaltyYards
+    turnovers
+    punts
+    puntingYards
+    puntingAverageYards
+  }
+}
+```
+
+## Fragments
+
 ```js
 fragment teamGameDetails on TeamGame {
   team
@@ -105,7 +126,7 @@ fragment teamGameDetails on TeamGame {
 
 fragment allStats on GameStats {
   passing {
-    playNumber
+    playerId
     name
     attempts
     completions
@@ -116,7 +137,7 @@ fragment allStats on GameStats {
     twoPointMakes
   }
   rushing {
-    playNumber
+    playerId
     name
     attempts
     yards
@@ -127,7 +148,7 @@ fragment allStats on GameStats {
     twoPointMakes
   }
   kickReturn {
-    playNumber
+    playerId
     name
     returns
     average
@@ -136,7 +157,7 @@ fragment allStats on GameStats {
     longTouchdown
   }
   puntReturn {
-    playNumber
+    playerId
     name
     returns
     average
@@ -145,7 +166,7 @@ fragment allStats on GameStats {
     longTouchdown
   }
   receiving {
-    playNumber
+    playerId
     name
     receptions
     yards
@@ -156,7 +177,7 @@ fragment allStats on GameStats {
     twoPointMakes
   }
   fumbles {
-    playNumber
+    playerId
     name
     totalFumbles
     recovered
@@ -165,7 +186,7 @@ fragment allStats on GameStats {
     fumblesLost
   }
   kicking {
-    playNumber
+    playerId
     name
     attempts
     made
@@ -178,7 +199,7 @@ fragment allStats on GameStats {
     extraPointTotal
   }
   defense {
-    playNumber
+    playerId
     name
     tackles
     assistedTackles
@@ -187,7 +208,7 @@ fragment allStats on GameStats {
     forcedFumbles
   }
   punting {
-    playNumber
+    playerId
     name
     punts
     yards

@@ -9,8 +9,8 @@ const schema = `
     yardLine: String
     yardsToGo: Int
     yardsNet: Int
-    possessionTeam: String
-    opponent: String
+    possessionTeam: TeamName
+    opponent: TeamName
     description: String
     note: String
   }
@@ -27,8 +27,8 @@ const schema = `
     time: Int
     seasonType: SeasonType
     final: Boolean
-    team: String
-    opponent: String
+    team: TeamName
+    opponent: TeamName
   }
 `;
 

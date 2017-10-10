@@ -16,8 +16,8 @@ const schema = `
 
   type GameSummary {
     gameId: Int!
-    home: String!
-    away: String!
+    home: TeamName
+    away: TeamName
     day: Int!
     month: Int!
     time: Int!
@@ -30,8 +30,8 @@ const schema = `
   }
 
   type TeamGame {
-    team: String!
-    opponent: String
+    team: TeamName
+    opponent: TeamName
     totalFirstDowns: Int
     totalYards: Int
     passingYards: Int
@@ -44,6 +44,22 @@ const schema = `
     puntingAverageYards: Int
     drives: [Drive!]
     stats: GameStats!
+  }
+
+  type TeamGameSummary{
+    gameId: Int
+    team: TeamName
+    opponent: TeamName
+    totalDrives: Int
+    totalYards: Int
+    passingYards: Int
+    runningYards: Int
+    penalties: Int
+    penaltyYards: Int
+    turnovers: Int
+    punts: Int
+    puntingYards: Int
+    puntingAverageYards: Int
   }
 `;
 

@@ -2,17 +2,17 @@ const schema = `
   type GameStats {
     passing: [PassingStats]
     rushing: [RushingStats]
-    kickReturn: [ReturnStats]
-    puntReturn: [ReturnStats]
+    kickReturn: [KickReturnStats]
+    puntReturn: [PuntReturnStats]
     receiving: [ReceivingStats]
     fumbles: [FumblesStats]
     kicking: [KickingStats]
-    defense: [DefenceStats]
+    defense: [defenseStats]
     punting: [PuntingStats]
   }
 
   type PassingStats {
-    playNumber: String
+    playerId: String
     name: String
     attempts: Int
     completions: Int
@@ -24,7 +24,7 @@ const schema = `
   }
 
   type RushingStats {
-    playNumber: String
+    playerId: String
     name: String
     attempts: Int
     yards: Int
@@ -35,8 +35,18 @@ const schema = `
     twoPointMakes: Int
   }
 
-  type ReturnStats {
-    playNumber: String
+  type KickReturnStats {
+    playerId: String
+    name: String
+    returns: Int
+    average: Int
+    touchdowns: Int
+    long: Int
+    longTouchdown: Int
+  }
+
+  type PuntReturnStats {
+    playerId: String
     name: String
     returns: Int
     average: Int
@@ -46,7 +56,7 @@ const schema = `
   }
 
   type ReceivingStats {
-    playNumber: String
+    playerId: String
     name: String
     receptions: Int
     yards: Int
@@ -58,7 +68,7 @@ const schema = `
   }
 
   type FumblesStats {
-    playNumber: String
+    playerId: String
     name: String
     totalFumbles: Int
     recovered: Int
@@ -68,7 +78,7 @@ const schema = `
   }
 
   type KickingStats {
-    playNumber: String
+    playerId: String
     name: String
     attempts: Int
     made: Int
@@ -81,8 +91,8 @@ const schema = `
     extraPointTotal: Int
   }
 
-  type DefenceStats {
-    playNumber: String
+  type defenseStats {
+    playerId: String
     name: String
     tackles: Int
     assistedTackles: Int
@@ -92,7 +102,7 @@ const schema = `
   }
 
   type PuntingStats {
-    playNumber: String
+    playerId: String
     name: String
     punts: Int
     yards: Int
