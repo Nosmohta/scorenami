@@ -204,10 +204,10 @@ const nflTeams = {
   },
   SD: {
     shortName: 'SD',
-    cityName: 'SD',
-    teamName: 'SD',
-    fullName: 'SD',
-    displayName: 'SD'
+    cityName: 'San Diego',
+    teamName: 'Chargers',
+    fullName: 'San Diego Chargers',
+    displayName: 'San Diego'
   },
   SF: {
     shortName: 'SF',
@@ -218,10 +218,10 @@ const nflTeams = {
   },
   STL: {
     shortName: 'STL',
-    cityName: 'STL',
-    teamName: 'STL',
-    fullName: 'STL',
-    displayName: 'STL'
+    cityName: 'St. Louis',
+    teamName: 'Rams',
+    fullName: 'St. Louis Rams',
+    displayName: 'St. Louis'
   },
   TB: {
     shortName: 'TB',
