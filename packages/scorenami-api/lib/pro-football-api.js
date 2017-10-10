@@ -14,8 +14,9 @@ const PFARequest = (resource, args) => {
 
 const composePFAQuery = args => {
   const apiOptions = args.options ? camelCaseToSnakeCase(args.options) : {};
-  delete args.options;
   const apiArgs = camelCaseToSnakeCase(args);
+
+  delete args.options;
 
   return Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, apiArgs, apiOptions);
 };
@@ -126,8 +127,10 @@ const translateDriveSchema = driveData => {
 const translatePlaysSchema = playsData => {
   return playsData.map(playAPI => {
     const play = transformPropNames(playAPI, 'play');
+
     play.possessionTeam = play.possessionTeam ? play.possessionTeam : null;
     play.opponent = play.opponent ? play.opponent : null;
+
     return play;
   });
 };
