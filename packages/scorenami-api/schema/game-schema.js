@@ -27,6 +27,7 @@ const schema = `
     final: Int!
     homeScore: Int
     awayScore: Int
+    seasonDetails: SeasonDetails!
   }
 
   type TeamGame {
@@ -50,7 +51,7 @@ const schema = `
     gameId: Int
     team: TeamName
     opponent: TeamName
-    totalDrives: Int
+    totalFirstDowns: Int
     totalYards: Int
     passingYards: Int
     runningYards: Int

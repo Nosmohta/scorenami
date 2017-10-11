@@ -1,13 +1,16 @@
 const axios = require('axios');
+const _ = require('axios');
 
 const config = require('../config/config');
 const camelCaseToSnakeCase = require('../utils/camel-case-to-snake-case');
 const proFootballApiSchemaMap = require('./pro-football-api-schema-map');
 
 const PFARequest = (resource, args) => {
+  console.log('PFA REQUEST ARGS', args);
   return axios
     .post(`${config.proFootballApiUrl}/${resource}`, composePFAQuery(args))
     .then(response => {
+      console.log('PFA RESPONSE', response);
       return translateResponseData(resource, response.data);
     });
 };
@@ -16,7 +19,7 @@ const composePFAQuery = args => {
   const apiOptions = args.options ? camelCaseToSnakeCase(args.options) : {};
   const apiArgs = camelCaseToSnakeCase(args);
 
-  delete args.options;
+  delete apiArgs.options;
 
   return Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, apiArgs, apiOptions);
 };
@@ -60,7 +63,36 @@ const translateGameSchema = gameData => {
 };
 
 const translateGameSummarySchema = gameSummaryData => {
-  return gameSummaryData.map(gameSummary => transformPropNames(gameSummary, 'gameSummary'));
+  const allGames = gameSummaryData.map(gameSummary =>
+    transformPropNames(gameSummary, 'gameSummary')
+  );
+  const currentTime = Math.round(Date.now() / 1000);
+  const scheduledGames = [];
+  const currentGames = [];
+  const completedGames = [];
+
+  allGames.map(game => {
+    if (game.final === 1) {
+      completedGames.push(game);
+    } else if (currentTime < game.time) {
+      scheduledGames.push(game);
+    } else {
+      currentGames.push(game);
+    }
+  });
+
+  const sortedAllGames = _.concat(
+    sortGamesByTime(currentGames),
+    sortGamesByTime(scheduledGames),
+    sortGamesByTime(completedGames)
+  );
+
+  console.log('sorted Games: ', sortedAllGames);
+  return sortedAllGames;
+};
+
+const sortGamesByTime = games => {
+  return games.sort((a, b) => a.time - b.time);
 };
 
 const translateTeamGameSchema = teamGameData => {
