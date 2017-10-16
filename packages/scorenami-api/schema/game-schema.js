@@ -27,7 +27,6 @@ const schema = `
     final: Int!
     homeScore: Int
     awayScore: Int
-    seasonDetails: SeasonDetails!
   }
 
   type TeamGame {

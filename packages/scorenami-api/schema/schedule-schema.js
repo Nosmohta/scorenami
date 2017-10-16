@@ -1,8 +1,4 @@
 const schema = `
-  type SeasonDetails {
-    preseasonWeeks: Int!
-  }
-
   input ScheduleOptionInput {
     year: Int,
     month: Int,
