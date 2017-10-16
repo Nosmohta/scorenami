@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 
 const PFARequest = require('../lib/pro-football-api');
-const { parseSeasonData } = require('../lib/season-details');
+const parseSeasonData = require('../lib/season-details');
 
 const getSeasonDetails = args => {
   return PFARequest('schedule', args)

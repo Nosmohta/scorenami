@@ -1,16 +1,14 @@
 const axios = require('axios');
-const _ = require('axios');
+const _ = require('lodash');
 
 const config = require('../config/config');
 const camelCaseToSnakeCase = require('../utils/camel-case-to-snake-case');
 const proFootballApiSchemaMap = require('./pro-football-api-schema-map');
 
 const PFARequest = (resource, args) => {
-  console.log('PFA REQUEST ARGS', args);
   return axios
     .post(`${config.proFootballApiUrl}/${resource}`, composePFAQuery(args))
     .then(response => {
-      console.log('PFA RESPONSE', response);
       return translateResponseData(resource, response.data);
     });
 };
@@ -87,7 +85,6 @@ const translateGameSummarySchema = gameSummaryData => {
     sortGamesByTime(completedGames)
   );
 
-  console.log('sorted Games: ', sortedAllGames);
   return sortedAllGames;
 };
 

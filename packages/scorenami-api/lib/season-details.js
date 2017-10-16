@@ -2,34 +2,23 @@ const _ = require('lodash');
 const moment = require('moment');
 
 const getCurrentNFLYear = () => {
-  console.log(Date.now());
-  console.log(_.now());
-  console.log(moment().week());
-  console.log(moment().year());
   const weekOfTheYear = moment().week();
   const currentYear = moment().year();
 
-  console.log(weekOfTheYear >= 50 ? currentYear : currentYear - 1);
   return weekOfTheYear >= 10 ? currentYear : currentYear - 1;
 };
 
 const getCurrentWeek = allGames => {
-  // sort games by start time
   const sortedGames = _.sortBy(allGames, ['time']);
-
-  // find first index where current time is > game time, get week and seasonType from that game.
   const currentTimeInSeconds = Math.round(Date.now() / 1000);
-  console.log('currentTime: ', currentTimeInSeconds);
-  const mostRecentGameIndex = _.findIndex(sortedGames, g => g.time < currentTimeInSeconds);
-  console.log('GAME INDEX: ', mostRecentGameIndex);
+  const nextGameIndex = _.findIndex(sortedGames, g => currentTimeInSeconds < g.time);
 
-  // if game is not final then return game week , else find next game and return its week.
-  if (mostRecentGameIndex === -1) {
-    return 'Pre Week 1';
-  } else if (sortedGames[mostRecentGameIndex].final !== 1) {
-    return composeWeekString(sortedGames[mostRecentGameIndex]);
+  if (nextGameIndex === -1) {
+    return null;
+  } else if (sortedGames[nextGameIndex - 1].final !== 1) {
+    return composeWeekString(sortedGames[nextGameIndex - 1]);
   } else {
-    return composeWeekString(sortedGames[mostRecentGameIndex + 1]);
+    return composeWeekString(sortedGames[nextGameIndex]);
   }
 };
 
@@ -58,8 +47,9 @@ const generateWeeksArray = (maxWeeks, prefix) => {
 };
 
 const createWeeks = (games, seasonType) => {
-  const maxWeeks = _.maxBy(games, 'week').week;
+  const maxWeeks = games.length > 0 ? _.maxBy(games, 'week').week : {};
   const weeks = [];
+
   if (seasonType === 'PRE') {
     return generateWeeksArray(maxWeeks, 'Pre Week');
   }
@@ -73,14 +63,14 @@ const createWeeks = (games, seasonType) => {
 };
 
 const parseSeasonData = seasonData => {
+  const preSeasonGames = [];
+  const regularSeasonGames = [];
+  const postSeasonGames = [];
   const seasonTypeMap = {
     PRE: preSeasonGames,
     REG: regularSeasonGames,
     POST: postSeasonGames
   };
-  const preSeasonGames = [];
-  const regularSeasonGames = [];
-  const postSeasonGames = [];
 
   seasonData.map(game => {
     if (seasonTypeMap[game.seasonType]) {
@@ -106,8 +96,7 @@ const parseSeasonData = seasonData => {
     allSeasonWeeks
   };
 
-  console.log('SEASON DETAILS: ', seasonDetails);
   return seasonDetails;
 };
 
-module.exports = { parseSeasonData };
+module.exports = parseSeasonData;
