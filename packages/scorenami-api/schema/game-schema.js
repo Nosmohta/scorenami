@@ -25,6 +25,7 @@ const schema = `
     week: Int!
     year: String!
     final: Int!
+    status: GameStatus
     homeScore: Int
     awayScore: Int
   }
@@ -60,6 +61,12 @@ const schema = `
     punts: Int
     puntingYards: Int
     puntingAverageYards: Int
+  }
+
+  enum GameStatus {
+    completed
+    scheduled
+    current
   }
 `;
 

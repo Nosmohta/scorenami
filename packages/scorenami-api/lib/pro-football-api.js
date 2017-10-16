@@ -71,10 +71,13 @@ const translateGameSummarySchema = gameSummaryData => {
 
   allGames.map(game => {
     if (game.final === 1) {
+      game.status = 'completed';
       completedGames.push(game);
     } else if (currentTime < game.time) {
+      game.status = 'scheduled';
       scheduledGames.push(game);
     } else {
+      game.status = 'current';
       currentGames.push(game);
     }
   });
