@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
@@ -24,7 +23,7 @@ const styles = {
     background: '#F2F2F2'
   },
   element: {
-    width: '4rem',
+    width: '8rem',
     flex: '0 0 auto',
     color: 'black',
     fontFamily: 'roboto',
@@ -34,7 +33,7 @@ const styles = {
     background: '#F2F2F2'
   },
   focusElement: {
-    width: '5rem',
+    width: '10rem',
     flex: '0 0 auto',
     color: 'black',
     fontFamily: 'roboto',
@@ -55,10 +54,6 @@ const styles = {
 };
 
 class SwipeBar extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.scrollToFocusElement(this.elementInFocus);
   }
@@ -85,23 +80,15 @@ class SwipeBar extends Component {
           buttonStyle={styles.button}
         />
         {swipeElements.map((element, i) => {
-          const elementValue = element.replace(/([a-z, \s])/gi, ($1, $2) => {
-            return '';
-          });
-
           return (
             <Tab
               key={`element-${this.props.focusElement}`}
               className="tab"
-              style={
-                elementValue === this.props.focusElement ? styles.focusElement : styles.element
-              }
+              style={element === this.props.focusElement ? styles.focusElement : styles.element}
               buttonStyle={styles.button}
               label={element}
               onActive={event => this.props.refetchGames(event)}
-              ref={
-                elementValue === this.props.focusElement ? el => (this.elementInFocus = el) : null
-              }
+              ref={element === this.props.focusElement ? el => (this.elementInFocus = el) : null}
             />
           );
         })}

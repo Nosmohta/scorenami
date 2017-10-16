@@ -1,12 +1,12 @@
 import React from 'react';
 
 import Header from '../components/header';
-import GameList from '../components/game-list';
+import DateSelector from '../components/date-selector';
 
 const HomePage = props => (
   <div className="home-page">
     <Header title="Scorenami" />
-    <GameList />
+    <DateSelector />
   </div>
 );
 
