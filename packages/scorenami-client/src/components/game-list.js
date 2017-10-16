@@ -66,6 +66,7 @@ const ScheduleQuery = gql`
       week
       year
       final
+      status
       homeScore
       awayScore
     }
