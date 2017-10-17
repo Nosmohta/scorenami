@@ -1,11 +1,17 @@
 const schema = `
   type Season {
-    currentWeek: String!
+    currentWeek: String
     currentYear: String!
-    preSeasonWeeks: [String!]!
-    regularSeasonWeeks: [String!]!
-    postSeasonWeeks:[String!]!
-    allSeasonWeeks: [String!]!
+    preSeasonWeeks: [SeasonWeek!]!
+    regularSeasonWeeks: [SeasonWeek!]!
+    postSeasonWeeks:[SeasonWeek!]!
+    allSeasonWeeks: [SeasonWeek!]!
+  }
+
+  type SeasonWeek {
+    displayName: String!
+    seasonType: SeasonType!
+    weekNumber: Int!
   }
 
   enum SeasonType {
