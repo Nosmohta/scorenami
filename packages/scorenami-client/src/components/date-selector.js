@@ -11,7 +11,9 @@ import Loading from '../components/loading';
 const buildYears = seasonYear => {
   const years = [];
   for (let yr = 2009; yr <= seasonYear; yr++) {
-    years.push(yr.toString());
+    years.push({
+      displayName: yr.toString()
+    });
   }
   return years;
 };
@@ -133,7 +135,7 @@ class DateSelector extends Component {
             <GameList
               focusYear={this.state.focusYear}
               focusWeek={this.state.focusWeek}
-              postSeasonWeeks={data.season.postSeasonWeeks}
+              seasonWeeks={data.season.allSeasonWeeks}
             />
           )}
       </div>
@@ -146,11 +148,16 @@ const SeasonQuery = gql`
     season(year: $year) {
       currentWeek
       currentYear
-      preSeasonWeeks
-      regularSeasonWeeks
-      postSeasonWeeks
-      allSeasonWeeks
+      allSeasonWeeks {
+        ...SeasonWeekDetails
+      }
     }
+  }
+
+  fragment SeasonWeekDetails on SeasonWeek {
+    displayName
+    seasonType
+    weekNumber
   }
 `;
 

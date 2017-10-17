@@ -82,13 +82,21 @@ class SwipeBar extends Component {
         {swipeElements.map((element, i) => {
           return (
             <Tab
-              key={`element-${this.props.focusElement}`}
+              key={`element-${element.displayName}`}
               className="tab"
-              style={element === this.props.focusElement ? styles.focusElement : styles.element}
+              style={
+                element.displayName === this.props.focusElement
+                  ? styles.focusElement
+                  : styles.element
+              }
               buttonStyle={styles.button}
-              label={element}
+              label={element.displayName}
               onActive={event => this.props.refetchGames(event)}
-              ref={element === this.props.focusElement ? el => (this.elementInFocus = el) : null}
+              ref={
+                element.displayName === this.props.focusElement
+                  ? el => (this.elementInFocus = el)
+                  : null
+              }
             />
           );
         })}

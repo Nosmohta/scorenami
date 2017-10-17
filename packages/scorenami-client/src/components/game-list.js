@@ -3,6 +3,7 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
 import List from 'material-ui/List';
+import _ from 'lodash';
 
 import GameSummary from './game-summary';
 import Loading from '../components/loading';
@@ -28,15 +29,13 @@ const parseWeekType = focusWeek => {
   }
 };
 
-const parseWeekValue = (focusWeek, postSeasonWeeks) => {
+const parseWeekValue = (focusWeek, seasonWeeks) => {
   if (!focusWeek) {
     return null;
-  } else if (postSeasonWeeks.includes(focusWeek)) {
-    return postSeasonWeeks.indexOf(focusWeek) + 1;
   } else {
-    return focusWeek.replace(/([a-z, /s])/gi, ($1, $2) => {
-      return '';
-    });
+    const indexOfFocusWeek = _.findIndex(seasonWeeks, { displayName: focusWeek });
+
+    return seasonWeeks[indexOfFocusWeek].weekNumber;
   }
 };
 
@@ -78,13 +77,13 @@ const ScheduleQuery = gql`
 `;
 
 export default graphql(ScheduleQuery, {
-  options: ({ focusYear, focusWeek, postSeasonWeeks }) => {
+  options: ({ focusYear, focusWeek, seasonWeeks }) => {
     return {
       variables: {
         options: {
           year: focusYear,
-          week: parseWeekValue(focusWeek, postSeasonWeeks),
-          seasonType: parseWeekType(focusWeek)
+          week: parseWeekValue(focusWeek, seasonWeeks),
+          seasonType: parseWeekType(focusWeek, seasonWeeks)
         }
       }
     };
