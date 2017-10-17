@@ -24,7 +24,7 @@ const postSeasonWeeks = [
   }
 ];
 
-const getCurrentNFLYear = () => {
+const getCurrentYear = () => {
   const weekOfTheYear = moment().week();
   const currentYear = moment().year();
 
@@ -39,21 +39,25 @@ const getCurrentWeek = allGames => {
   if (nextGameIndex === -1) {
     return null;
   } else if (sortedGames[nextGameIndex - 1].final !== 1) {
-    return composeWeekString(sortedGames[nextGameIndex - 1]);
+    const game = sortedGames[nextGameIndex - 1];
+    const weekPrefix = getWeekPrefix(game);
+    return createWeek(game.week, game.seasonType, weekPrefix);
   } else {
-    return composeWeekString(sortedGames[nextGameIndex]);
+    const game = sortedGames[nextGameIndex];
+    const weekPrefix = getWeekPrefix(game);
+    return createWeek(game.week, game.seasonType, weekPrefix);
   }
 };
 
-const composeWeekString = currentWeekGame => {
+const getWeekPrefix = currentWeekGame => {
   const seasonType = currentWeekGame.seasonType;
+  const currentWeek = currentWeekGame.week;
   const postSeasonWeekNames = postSeasonWeeks.map(week => week.displayName);
 
-  const currentWeek = currentWeekGame.week;
   if (seasonType === 'PRE') {
-    return `Pre Week ${currentWeek}`;
+    return 'Pre Week';
   } else if (seasonType === 'REG') {
-    return `Week ${currentWeek}`;
+    return 'Week';
   } else if (seasonType === 'POST') {
     return postSeasonWeekNames[currentWeek - 1] ? postSeasonWeekNames[currentWeek - 1] : null;
   } else {
@@ -70,7 +74,7 @@ const createWeek = (weekNumber, seasonType, prefix) => {
 };
 
 const createWeeks = (games, seasonType) => {
-  const maxWeeks = games.length > 0 ? _.maxBy(games, 'week').week : {};
+  const maxWeeks = games.length > 0 ? _.maxBy(games, 'week').week : 0;
 
   if (seasonType === 'PRE') {
     return _.range(1, maxWeeks + 1).map(week => {
@@ -107,7 +111,7 @@ const parseSeasonData = seasonData => {
   const postSeasonWeeks = createWeeks(games.POST, 'POST');
   const allSeasonWeeks = _.concat(preSeasonWeeks, regularSeasonWeeks, postSeasonWeeks);
   const currentWeek = getCurrentWeek(allSeasonGames);
-  const currentYear = getCurrentNFLYear();
+  const currentYear = getCurrentYear();
 
   const seasonDetails = {
     currentWeek,

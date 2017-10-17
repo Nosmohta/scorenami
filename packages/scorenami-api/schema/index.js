@@ -31,7 +31,7 @@ const rootSchema = `
       options: PlayerStatsInput
     ): PlayerStats
     schedule(options: ScheduleOptionInput!): [GameSummary!]!
-    season(year: Int): Season
+    season(year: Int!): Season
     teams(options: TeamOptionInput): [TeamGameSummary]
   }
 `;

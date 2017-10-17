@@ -62,31 +62,31 @@ const translateGameSchema = gameData => {
 };
 
 const translateGameSummarySchema = gameSummaryData => {
+  const currentTime = Math.round(Date.now() / 1000);
+  const scheduledGames = [];
+  const liveGames = [];
+  const finalGames = [];
   const allGames = gameSummaryData.map(gameSummary =>
     transformPropNames(gameSummary, 'gameSummary')
   );
-  const currentTime = Math.round(Date.now() / 1000);
-  const scheduledGames = [];
-  const currentGames = [];
-  const completedGames = [];
 
   allGames.map(game => {
     if (game.final === 1) {
       game.status = 'final';
-      completedGames.push(game);
+      finalGames.push(game);
     } else if (currentTime < game.time) {
       game.status = 'scheduled';
       scheduledGames.push(game);
     } else {
       game.status = 'live';
-      currentGames.push(game);
+      liveGames.push(game);
     }
   });
 
   const sortedAllGames = _.concat(
-    sortGamesByTime(currentGames),
+    sortGamesByTime(liveGames),
     sortGamesByTime(scheduledGames),
-    sortGamesByTime(completedGames)
+    sortGamesByTime(finalGames)
   );
 
   return sortedAllGames;
