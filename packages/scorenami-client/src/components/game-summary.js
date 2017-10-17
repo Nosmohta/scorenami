@@ -1,33 +1,33 @@
 import React from 'react';
+import { css } from 'glamor';
 import ListItem from 'material-ui/List/ListItem';
 import Divider from 'material-ui/Divider';
 
+import getTeamLogo from '../utils/get-team-logo';
 import nflTeams from '../data/nfl-teams';
-
-const getTeamLogo = shortName => `/assets/img/nfl/logos/${shortName.toLowerCase()}.svg`;
 
 const GameSummary = props => {
   const { home, away, homeScore, awayScore } = props.data;
   const final = props.data.final === 1 ? true : false;
 
-  const gameSummaryTeamStyles = {
-    minHeight: '1.2em'
-  };
+  const scoreStyles = css({
+    minHeight: '1.2em',
 
-  const logoStyles = {
-    marginRight: '10px'
-  };
+    '& .game-summary-logo': {
+      marginRight: '10px'
+    }
+  });
 
-  const finalStyles = {
+  const finalStyles = css({
     float: 'right',
     marginTop: '-32px'
-  };
+  });
 
   return (
     <div className="game-summary">
       <ListItem className="game-summary-item">
-        <div className="game-summary-team" style={gameSummaryTeamStyles}>
-          <span className="game-summary-logo" style={logoStyles}>
+        <div className={scoreStyles}>
+          <span className="game-summary-logo">
             <img
               className={`game-summary-logo-${away.toLowerCase()}`}
               src={getTeamLogo(away)}
@@ -37,8 +37,8 @@ const GameSummary = props => {
           </span>
           {nflTeams[away].displayName} <strong>{awayScore}</strong>
         </div>
-        <div className="game-summary-team" style={gameSummaryTeamStyles}>
-          <span className="game-summary-logo" style={logoStyles}>
+        <div className={scoreStyles}>
+          <span className="game-summary-logo">
             <img
               className={`game-summary-logo-${home.toLowerCase()}`}
               src={getTeamLogo(home)}
@@ -48,7 +48,7 @@ const GameSummary = props => {
           </span>
           {nflTeams[home].displayName} <strong>{homeScore}</strong>
         </div>
-        {final && <span style={finalStyles}>Final</span>}
+        {final && <span className={finalStyles}>Final</span>}
       </ListItem>
       <Divider />
     </div>
