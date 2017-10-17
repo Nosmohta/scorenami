@@ -2,23 +2,25 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
+import { css } from 'glamor';
 import List from 'material-ui/List';
 
+import Loading from './loading';
 import GameSummary from './game-summary';
 
 const GameList = props => {
-  const linkStyles = {
+  const linkStyles = css({
     textDecoration: 'none'
-  };
+  });
 
   if (props.data.loading) {
-    return <div>Loading</div>;
+    return <Loading />;
   }
 
   return (
     <List className="game-list">
       {props.data.schedule.map(game => (
-        <Link to={`/game/${game.gameId}`} key={game.gameId} style={linkStyles}>
+        <Link to={`/game/${game.gameId}`} key={game.gameId} className={linkStyles}>
           <GameSummary data={game} />
         </Link>
       ))}
