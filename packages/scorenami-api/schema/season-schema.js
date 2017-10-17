@@ -1,7 +1,7 @@
 const schema = `
   type Season {
-    currentWeek: String
     currentYear: String!
+    currentWeek: SeasonWeek
     preSeasonWeeks: [SeasonWeek!]!
     regularSeasonWeeks: [SeasonWeek!]!
     postSeasonWeeks:[SeasonWeek!]!

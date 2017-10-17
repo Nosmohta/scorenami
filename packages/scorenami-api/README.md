@@ -14,11 +14,14 @@ Scorenami GraphQL API server.
 ## GraphQL Queries
 
 ### Season
+
 ```js
 query SeasonQuery($year: Int!) {
   season(year: $year) {
-    currentWeek
     currentYear
+    currentWeek {
+      ...SeasonWeekDetails
+    }
     preSeasonWeeks {
       ...SeasonWeekDetails
     }
