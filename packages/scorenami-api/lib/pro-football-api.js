@@ -1,4 +1,6 @@
 const axios = require('axios');
+const _ = require('lodash');
+const moment = require('moment');
 
 const config = require('../config/config');
 const camelCaseToSnakeCase = require('../utils/camel-case-to-snake-case');
@@ -16,7 +18,7 @@ const composePFAQuery = args => {
   const apiOptions = args.options ? camelCaseToSnakeCase(args.options) : {};
   const apiArgs = camelCaseToSnakeCase(args);
 
-  delete args.options;
+  delete apiArgs.options;
 
   return Object.assign({ api_key: process.env.PRO_FOOTBALL_API_KEY }, apiArgs, apiOptions);
 };
@@ -60,7 +62,38 @@ const translateGameSchema = gameData => {
 };
 
 const translateGameSummarySchema = gameSummaryData => {
-  return gameSummaryData.map(gameSummary => transformPropNames(gameSummary, 'gameSummary'));
+  const currentTime = Math.round(Date.now() / 1000);
+  const scheduledGames = [];
+  const liveGames = [];
+  const finalGames = [];
+  const allGames = gameSummaryData.map(gameSummary =>
+    transformPropNames(gameSummary, 'gameSummary')
+  );
+
+  allGames.map(game => {
+    if (game.final === 1) {
+      game.status = 'final';
+      finalGames.push(game);
+    } else if (currentTime < game.time) {
+      game.status = 'scheduled';
+      scheduledGames.push(game);
+    } else {
+      game.status = 'live';
+      liveGames.push(game);
+    }
+  });
+
+  const sortedAllGames = _.concat(
+    sortGamesByTime(liveGames),
+    sortGamesByTime(scheduledGames),
+    sortGamesByTime(finalGames)
+  );
+
+  return sortedAllGames;
+};
+
+const sortGamesByTime = games => {
+  return games.sort((a, b) => a.time - b.time);
 };
 
 const translateTeamGameSchema = teamGameData => {

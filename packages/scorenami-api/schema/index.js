@@ -5,7 +5,7 @@ const driveSchema = require('./drive-schema');
 const gameSchema = require('./game-schema');
 const playSchema = require('./play-schema');
 const playerSchema = require('./player-schema');
-const seasonTypeSchema = require('./season-type-schema');
+const seasonSchema = require('./season-schema');
 const scheduleSchema = require('./schedule-schema');
 const statsSchema = require('./stats-schema');
 const teamSchema = require('./team-schema');
@@ -14,6 +14,7 @@ const gameResolvers = require('../resolvers/game-resolvers');
 const playsResolvers = require('../resolvers/plays-resolvers');
 const playersResolvers = require('../resolvers/players-resolvers');
 const scheduleResolvers = require('../resolvers/schedule-resolvers');
+const seasonResolvers = require('../resolvers/season-resolvers');
 const teamsResolvers = require('../resolvers/teams-resolvers');
 
 const rootSchema = `
@@ -30,6 +31,7 @@ const rootSchema = `
       options: PlayerStatsInput
     ): PlayerStats
     schedule(options: ScheduleOptionInput!): [GameSummary!]!
+    season(year: Int!): Season
     teams(options: TeamOptionInput): [TeamGameSummary]
   }
 `;
@@ -40,7 +42,7 @@ const schema = [
   gameSchema,
   playSchema,
   playerSchema,
-  seasonTypeSchema,
+  seasonSchema,
   scheduleSchema,
   statsSchema,
   teamSchema
@@ -51,6 +53,7 @@ const resolvers = merge(
   playsResolvers,
   playersResolvers,
   scheduleResolvers,
+  seasonResolvers,
   teamsResolvers
 );
 
