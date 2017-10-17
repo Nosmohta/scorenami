@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "apollo-client": "^1.9.3",
+    "glamor": "^2.20.40",
+    "glamorous": "^4.9.7",
     "graphql-tag": "^2.4.2",
     "material-ui": "^0.19.2",
     "react": "^15.6.1",
