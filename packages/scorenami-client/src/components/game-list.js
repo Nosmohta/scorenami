@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import List from 'material-ui/List';
 
 import GameSummary from './game-summary';
+import Loading from '../components/loading';
 
 const styles = {
   link: {
@@ -27,13 +28,15 @@ const parseWeekType = focusWeek => {
   }
 };
 
-const parseWeekValue = focusWeek => {
-  if (focusWeek) {
+const parseWeekValue = (focusWeek, postSeasonWeeks) => {
+  if (!focusWeek) {
+    return null;
+  } else if (postSeasonWeeks.includes(focusWeek)) {
+    return postSeasonWeeks.indexOf(focusWeek) + 1;
+  } else {
     return focusWeek.replace(/([a-z, /s])/gi, ($1, $2) => {
       return '';
     });
-  } else {
-    return null;
   }
 };
 
@@ -42,6 +45,7 @@ const GameList = props => {
 
   return (
     <List className="game-list" style={styles.list}>
+      {data.loading && <Loading />}
       {!data.loading &&
         data.schedule &&
         data.schedule.map(game => (
@@ -74,12 +78,12 @@ const ScheduleQuery = gql`
 `;
 
 export default graphql(ScheduleQuery, {
-  options: ({ focusYear, focusWeek }) => {
+  options: ({ focusYear, focusWeek, postSeasonWeeks }) => {
     return {
       variables: {
         options: {
           year: focusYear,
-          week: parseWeekValue(focusWeek),
+          week: parseWeekValue(focusWeek, postSeasonWeeks),
           seasonType: parseWeekType(focusWeek)
         }
       }

@@ -70,6 +70,10 @@ const translateGameSummarySchema = gameSummaryData => {
   const completedGames = [];
 
   allGames.map(game => {
+    if (!game.seasonType) {
+      return;
+    }
+
     if (game.final === 1) {
       game.status = 'completed';
       completedGames.push(game);

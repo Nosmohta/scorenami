@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import ReactDOM from 'react-dom';
+import { isEqual } from 'lodash';
 
 import SwipeBar from './swipe-bar';
 import GameList from './game-list';
@@ -30,7 +31,7 @@ class DateSelector extends Component {
       weeks: [],
       focusYear: null,
       focusWeek: null,
-      loading: props.data.loading ? true : false
+      loading: true
     };
   }
 
@@ -43,26 +44,67 @@ class DateSelector extends Component {
 
   refetchGames(event) {
     const label = event.props.label;
-    const dateType = label.match(/([a-z])/i) ? 'focusWeek' : 'focusYear';
-    const newState =
-      this.state[dateType] === label && dateType === 'focusWeek'
-        ? { focusWeek: null }
-        : { [dateType]: label };
+    const eventType = label.match(/([a-z])/i) ? 'focusWeek' : 'focusYear';
 
-    this.setState(newState);
+    /*
+    * Case: Change in focusWeek.
+    */
+    if (eventType === 'focusWeek') {
+      const newFocusWeek =
+        this.state[eventType] === label ? { focusWeek: null } : { focusWeek: label };
+
+      this.setState(newFocusWeek);
+    }
+
+    /*
+    * Case: Change in focusYear.
+    */
+    if (eventType === 'focusYear') {
+      this.setState({
+        focusYear: label
+      });
+      const refetchOptions = {
+        year: label
+      };
+
+      this.props.data.refetch(refetchOptions);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { season } = nextProps.data;
+    const nextPropsSeason = nextProps.data.season;
 
-    if (season && this.state.loading) {
-      this.setState({
-        years: buildYears(season.currentYear),
-        weeks: season.allSeasonWeeks,
-        focusYear: season.currentYear,
-        focusWeek: season.currentWeek,
+    /*
+    * Case: First Load of season data is recieved.
+    */
+    if (nextPropsSeason && this.state.loading) {
+      const newState = {
+        years:
+          this.state.years.length > 0 ? this.state.years : buildYears(nextPropsSeason.currentYear),
+        weeks: nextPropsSeason.allSeasonWeeks,
+        focusYear: this.state.focusYear ? this.state.focusYear : nextPropsSeason.currentYear,
+        focusWeek: this.state.focusWeek ? this.state.focusWeek : nextPropsSeason.currentWeek,
         loading: nextProps.data.loading ? true : false
-      });
+      };
+
+      this.setState(newState);
+    }
+
+    /*
+    * Case: New and distinct allSeasonWeeks data is recieved.
+    */
+    if (nextPropsSeason && this.props.data.season) {
+      if (!isEqual(this.props.data.season.allSeasonWeeks, nextPropsSeason.allSeasonWeeks)) {
+        const newWeeksState = {
+          weeks: nextPropsSeason.allSeasonWeeks,
+          focusWeek:
+            nextPropsSeason.allSeasonWeeks.indexOf(this.state.focusWeek) === -1
+              ? null
+              : this.state.focusWeek
+        };
+
+        this.setState(newWeeksState);
+      }
     }
   }
 
@@ -85,13 +127,15 @@ class DateSelector extends Component {
           scrollToFocusElement={this.scrollToFocusElement}
           focusElement={this.state.focusWeek}
         />
-        <div>
-          {data.loading && <Loading />}
-          {!data.loading &&
-            data.season && (
-              <GameList focusYear={this.state.focusYear} focusWeek={this.state.focusWeek} />
-            )}
-        </div>
+        {data.loading && <Loading />}
+        {!data.loading &&
+          data.season && (
+            <GameList
+              focusYear={this.state.focusYear}
+              focusWeek={this.state.focusWeek}
+              postSeasonWeeks={data.season.postSeasonWeeks}
+            />
+          )}
       </div>
     );
   }
