@@ -13,6 +13,28 @@ Scorenami GraphQL API server.
 
 ## GraphQL Queries
 
+### Season
+```js
+query SeasonQuery($year: Int!) {
+  season(year: $year) {
+    currentWeek
+    currentYear
+    preSeasonWeeks {
+      ...SeasonWeekDetails
+    }
+    regularSeasonWeeks {
+      ...SeasonWeekDetails
+    }
+    postSeasonWeeks {
+      ...SeasonWeekDetails
+    }
+    allSeasonWeeks {
+      ...SeasonWeekDetails
+    }
+  }
+}
+```
+
 ### Schedule
 
 ```js
@@ -100,9 +122,16 @@ Scorenami GraphQL API server.
 }
 ```
 
+
 ## Fragments
 
 ```js
+fragment SeasonWeekDetails on SeasonWeek {
+  displayName
+  seasonType
+  weekNumber
+}
+
 fragment teamGameDetails on TeamGame {
   team
   opponent

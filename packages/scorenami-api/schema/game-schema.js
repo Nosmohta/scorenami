@@ -64,9 +64,9 @@ const schema = `
   }
 
   enum GameStatus {
-    completed
+    final
     scheduled
-    current
+    live
   }
 `;
 

@@ -1,6 +1,29 @@
 const _ = require('lodash');
 const moment = require('moment');
 
+const postSeasonWeeks = [
+  {
+    displayName: 'Wild Card',
+    seasonType: 'POST',
+    weekNumber: 1
+  },
+  {
+    displayName: 'Div. Playoff',
+    seasonType: 'POST',
+    weekNumber: 2
+  },
+  {
+    displayName: 'Conf. Champ',
+    seasonType: 'POST',
+    weekNumber: 3
+  },
+  {
+    displayName: 'Super Bowl',
+    seasonType: 'POST',
+    weekNumber: 4
+  }
+];
+
 const getCurrentNFLYear = () => {
   const weekOfTheYear = moment().week();
   const currentYear = moment().year();
@@ -24,65 +47,64 @@ const getCurrentWeek = allGames => {
 
 const composeWeekString = currentWeekGame => {
   const seasonType = currentWeekGame.seasonType;
+  const postSeasonWeekNames = postSeasonWeeks.map(week => week.displayName);
+
   const currentWeek = currentWeekGame.week;
   if (seasonType === 'PRE') {
     return `Pre Week ${currentWeek}`;
   } else if (seasonType === 'REG') {
     return `Week ${currentWeek}`;
   } else if (seasonType === 'POST') {
-    const postSeasonWeeks = ['Wild Card', 'Div. Playoff', 'Conf. Champ', 'SuperBowl'];
-    return postSeasonWeeks[currentWeek - 1] ? postSeasonWeeks[currentWeek - 1] : null;
+    return postSeasonWeekNames[currentWeek - 1] ? postSeasonWeekNames[currentWeek - 1] : null;
   } else {
     return null;
   }
 };
 
-const generateWeeksArray = (maxWeeks, prefix) => {
-  const weeks = [];
-  for (let wk = 1; wk <= maxWeeks; wk++) {
-    weeks.push(prefix + ' ' + wk);
-  }
-
-  return weeks;
+const createWeek = (weekNumber, seasonType, prefix) => {
+  return {
+    displayName: `${prefix} ${weekNumber}`,
+    seasonType: seasonType,
+    weekNumber: weekNumber
+  };
 };
 
 const createWeeks = (games, seasonType) => {
   const maxWeeks = games.length > 0 ? _.maxBy(games, 'week').week : {};
-  const weeks = [];
 
   if (seasonType === 'PRE') {
-    return generateWeeksArray(maxWeeks, 'Pre Week');
+    return _.range(1, maxWeeks + 1).map(week => {
+      return createWeek(week, 'PRE', 'Pre Week');
+    });
+  } else if (seasonType === 'REG') {
+    return _.range(1, maxWeeks + 1).map(week => {
+      return createWeek(week, 'REG', 'Week');
+    });
+  } else if (seasonType === 'POST') {
+    return postSeasonWeeks;
+  } else {
+    return [];
   }
-  if (seasonType === 'REG') {
-    return generateWeeksArray(maxWeeks, 'Week');
-  }
-  if (seasonType === 'POST') {
-    return ['Wild Card', 'Div. Playoff', 'Conf. Champ', 'SuperBowl'];
-  }
-  return [];
 };
 
 const parseSeasonData = seasonData => {
-  const preSeasonGames = [];
-  const regularSeasonGames = [];
-  const postSeasonGames = [];
-  const seasonTypeMap = {
-    PRE: preSeasonGames,
-    REG: regularSeasonGames,
-    POST: postSeasonGames
+  const games = {
+    PRE: [],
+    REG: [],
+    POST: []
   };
 
   seasonData.map(game => {
-    if (seasonTypeMap[game.seasonType]) {
-      seasonTypeMap[game.seasonType].push(game);
+    if (games[game.seasonType]) {
+      games[game.seasonType].push(game);
     }
   });
 
-  const allSeasonGames = _.concat(preSeasonGames, regularSeasonGames, postSeasonGames);
+  const allSeasonGames = _.concat(games.PRE, games.REG, games.POST);
 
-  const preSeasonWeeks = createWeeks(preSeasonGames, 'PRE');
-  const regularSeasonWeeks = createWeeks(regularSeasonGames, 'REG');
-  const postSeasonWeeks = createWeeks(postSeasonGames, 'POST');
+  const preSeasonWeeks = createWeeks(games.PRE, 'PRE');
+  const regularSeasonWeeks = createWeeks(games.REG, 'REG');
+  const postSeasonWeeks = createWeeks(games.POST, 'POST');
   const allSeasonWeeks = _.concat(preSeasonWeeks, regularSeasonWeeks, postSeasonWeeks);
   const currentWeek = getCurrentWeek(allSeasonGames);
   const currentYear = getCurrentNFLYear();

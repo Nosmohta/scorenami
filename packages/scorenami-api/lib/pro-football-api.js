@@ -1,5 +1,6 @@
 const axios = require('axios');
 const _ = require('lodash');
+const moment = require('moment');
 
 const config = require('../config/config');
 const camelCaseToSnakeCase = require('../utils/camel-case-to-snake-case');
@@ -75,13 +76,13 @@ const translateGameSummarySchema = gameSummaryData => {
     }
 
     if (game.final === 1) {
-      game.status = 'completed';
+      game.status = 'final';
       completedGames.push(game);
     } else if (currentTime < game.time) {
       game.status = 'scheduled';
       scheduledGames.push(game);
     } else {
-      game.status = 'current';
+      game.status = 'live';
       currentGames.push(game);
     }
   });
