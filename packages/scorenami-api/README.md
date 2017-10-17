@@ -53,6 +53,7 @@ query SeasonQuery($year: Int!) {
     week
     year
     final
+    status
     homeScore
     awayScore
   }

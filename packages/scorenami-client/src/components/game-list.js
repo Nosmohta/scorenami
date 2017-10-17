@@ -19,18 +19,24 @@ const GameList = props => {
 
   return (
     <List className="game-list">
-      {props.data.schedule.map(game => (
-        <Link to={`/game/${game.gameId}`} key={game.gameId} className={linkStyles}>
-          <GameSummary data={game} />
-        </Link>
-      ))}
+      {props.data.schedule.map(game => {
+        if (game.status === 'live' || game.status === 'final') {
+          return (
+            <Link to={`/game/${game.gameId}`} key={game.gameId} className={linkStyles}>
+              <GameSummary data={game} />
+            </Link>
+          );
+        } else {
+          return <GameSummary data={game} />;
+        }
+      })}
     </List>
   );
 };
 
 const ScheduleQuery = gql`
   query {
-    schedule(options: { year: 2017, week: 3, seasonType: REG }) {
+    schedule(options: { year: 2017, week: 7, seasonType: REG }) {
       gameId
       home
       away
@@ -41,6 +47,7 @@ const ScheduleQuery = gql`
       week
       year
       final
+      status
       homeScore
       awayScore
     }
