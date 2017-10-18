@@ -3,7 +3,6 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
 import List from 'material-ui/List';
-import _ from 'lodash';
 
 import GameSummary from './game-summary';
 import Loading from '../components/loading';
@@ -14,28 +13,6 @@ const styles = {
   },
   list: {
     padding: '0'
-  }
-};
-
-const parseWeekType = focusWeek => {
-  if (!focusWeek) {
-    return null;
-  } else if (focusWeek.match(/pre/gi)) {
-    return 'PRE';
-  } else if (focusWeek.match(/week/gi)) {
-    return 'REG';
-  } else {
-    return 'POST';
-  }
-};
-
-const parseWeekValue = (focusWeek, seasonWeeks) => {
-  if (!focusWeek) {
-    return null;
-  } else {
-    const indexOfFocusWeek = _.findIndex(seasonWeeks, { displayName: focusWeek });
-
-    return seasonWeeks[indexOfFocusWeek].weekNumber;
   }
 };
 
@@ -82,8 +59,8 @@ export default graphql(ScheduleQuery, {
       variables: {
         options: {
           year: focusYear,
-          week: parseWeekValue(focusWeek, seasonWeeks),
-          seasonType: parseWeekType(focusWeek, seasonWeeks)
+          week: focusWeek && focusWeek.weekNumber ? focusWeek.weekNumber : null,
+          seasonType: focusWeek && focusWeek.seasonType ? focusWeek.seasonType : null
         }
       }
     };

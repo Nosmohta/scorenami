@@ -85,15 +85,16 @@ class SwipeBar extends Component {
               key={`element-${element.displayName}`}
               className="tab"
               style={
-                element.displayName === this.props.focusElement
+                element.displayName === this.props.focusElement.displayName
                   ? styles.focusElement
                   : styles.element
               }
               buttonStyle={styles.button}
               label={element.displayName}
+              data={element}
               onActive={event => this.props.refetchGames(event)}
               ref={
-                element.displayName === this.props.focusElement
+                element.displayName === this.props.focusElement.displayName
                   ? el => (this.elementInFocus = el)
                   : null
               }

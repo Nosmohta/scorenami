@@ -52,8 +52,12 @@ class DateSelector extends Component {
     * Case: Change in focusWeek.
     */
     if (eventType === 'focusWeek') {
+      console.log('EVENT PROPS', event);
+
       const newFocusWeek =
-        this.state[eventType] === label ? { focusWeek: null } : { focusWeek: label };
+        this.state.focusWeek && this.state.focusWeek.displayName === label
+          ? { focusWeek: null }
+          : { focusWeek: event.props.data };
 
       this.setState(newFocusWeek);
     }
@@ -75,7 +79,6 @@ class DateSelector extends Component {
 
   componentWillReceiveProps(nextProps) {
     const nextPropsSeason = nextProps.data.season;
-
     /*
     * Case: First Load of season data is recieved.
     */
@@ -84,11 +87,13 @@ class DateSelector extends Component {
         years:
           this.state.years.length > 0 ? this.state.years : buildYears(nextPropsSeason.currentYear),
         weeks: nextPropsSeason.allSeasonWeeks,
-        focusYear: this.state.focusYear ? this.state.focusYear : nextPropsSeason.currentYear,
+        focusYear: this.state.focusYear
+          ? this.state.focusYear
+          : nextPropsSeason.currentYear.toString(),
         focusWeek: this.state.focusWeek ? this.state.focusWeek : nextPropsSeason.currentWeek,
         loading: nextProps.data.loading ? true : false
       };
-
+      console.log('NEW STATE', newState);
       this.setState(newState);
     }
 
@@ -111,6 +116,7 @@ class DateSelector extends Component {
   }
 
   render() {
+    console.log('RENDER STATE', this.state);
     const { data } = this.props;
 
     return (
@@ -120,14 +126,14 @@ class DateSelector extends Component {
           swipeElements={this.state.years}
           refetchGames={selection => this.refetchGames(selection)}
           scrollToFocusElement={this.scrollToFocusElement}
-          focusElement={this.state.focusYear}
+          focusElement={{ displayName: this.state.focusYear }}
         />
         <SwipeBar
           key="weeks"
           swipeElements={this.state.weeks}
           refetchGames={selection => this.refetchGames(selection)}
           scrollToFocusElement={this.scrollToFocusElement}
-          focusElement={this.state.focusWeek}
+          focusElement={this.state.focusWeek ? this.state.focusWeek : []}
         />
         {data.loading && <Loading />}
         {!data.loading &&
@@ -146,8 +152,10 @@ class DateSelector extends Component {
 const SeasonQuery = gql`
   query SeasonQuery($year: Int!) {
     season(year: $year) {
-      currentWeek
       currentYear
+      currentWeek {
+        ...SeasonWeekDetails
+      }
       allSeasonWeeks {
         ...SeasonWeekDetails
       }
