@@ -52,8 +52,6 @@ class DateSelector extends Component {
     * Case: Change in focusWeek.
     */
     if (eventType === 'focusWeek') {
-      console.log('EVENT PROPS', event);
-
       const newFocusWeek =
         this.state.focusWeek && this.state.focusWeek.displayName === label
           ? { focusWeek: null }
@@ -93,7 +91,7 @@ class DateSelector extends Component {
         focusWeek: this.state.focusWeek ? this.state.focusWeek : nextPropsSeason.currentWeek,
         loading: nextProps.data.loading ? true : false
       };
-      console.log('NEW STATE', newState);
+
       this.setState(newState);
     }
 
@@ -116,7 +114,6 @@ class DateSelector extends Component {
   }
 
   render() {
-    console.log('RENDER STATE', this.state);
     const { data } = this.props;
 
     return (

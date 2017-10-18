@@ -1,23 +1,32 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { css } from 'glamor';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 
-import CircularProgress from 'material-ui/CircularProgress';
+const styles = css({
+  position: 'relative',
+  width: '40px',
+  height: '40px',
+  margin: '100px auto 0 auto',
 
-const styles = {
-  container: {
-    height: '300px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
+  '& .refresh': {
+    display: 'inline-block',
+    position: 'relative'
   }
+});
+
+const Loading = props => (
+  <div className={styles}>
+    <RefreshIndicator className="refresh" size={40} left={0} top={0} status={props.status} />
+  </div>
+);
+
+Loading.propTypes = {
+  status: PropTypes.string
 };
 
-const Loading = props => {
-  return (
-    <div style={styles.container}>
-      <CircularProgress size={100} thickness={7} />
-    </div>
-  );
+Loading.defaultProps = {
+  status: 'loading'
 };
 
-export default withRouter(Loading);
+export default Loading;
