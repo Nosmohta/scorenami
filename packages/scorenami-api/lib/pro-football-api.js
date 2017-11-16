@@ -75,14 +75,14 @@ const translateGameSummarySchema = gameSummaryData => {
       return;
     }
 
-    if (game.final === 1) {
-      game.status = 'final';
-      finalGames.push(game);
-    } else if (currentTime < game.time) {
+    if (currentTime < game.time) {
       game.status = 'scheduled';
       scheduledGames.push(game);
-    } else {
+    } else if (game.final !== 1 && currentTime - game.time < 60 * 60 * 10) {
       game.status = 'live';
+      liveGames.push(game);
+    } else {
+      game.status = 'final';
       liveGames.push(game);
     }
   });
