@@ -59,13 +59,13 @@ const ScheduleQuery = gql`
 `;
 
 export default graphql(ScheduleQuery, {
-  options: ({ focusYear, focusWeek, seasonWeeks }) => {
+  options: ({ selectedYear, selectedWeek, seasonWeeks }) => {
     return {
       variables: {
         options: {
-          year: focusYear,
-          week: focusWeek && focusWeek.weekNumber ? focusWeek.weekNumber : null,
-          seasonType: focusWeek && focusWeek.seasonType ? focusWeek.seasonType : null
+          year: selectedYear,
+          week: selectedWeek && selectedWeek.weekNumber ? selectedWeek.weekNumber : null,
+          seasonType: selectedWeek && selectedWeek.seasonType ? selectedWeek.seasonType : null
         }
       }
     };

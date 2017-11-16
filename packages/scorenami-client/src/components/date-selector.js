@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
-import ReactDOM from 'react-dom';
-import { isEqual } from 'lodash';
+import { isEqual, find } from 'lodash';
 
 import SwipeBar from './swipe-bar';
 import GameList from './game-list';
@@ -10,9 +10,9 @@ import Loading from '../components/loading';
 
 const buildYears = seasonYear => {
   const years = [];
-  for (let yr = 2009; yr <= seasonYear; yr++) {
+  for (let year = 2009; year <= seasonYear; year++) {
     years.push({
-      displayName: yr.toString()
+      displayName: year.toString()
     });
   }
   return years;
@@ -24,15 +24,15 @@ const getCalanderYear = () => {
   return date.getFullYear().toString();
 };
 
-class DateSelector extends Component {
+class DateSelector extends React.Component {
   constructor(props) {
     super(props);
-    this.refetchGames = this.refetchGames.bind(this);
+    this.fetchGames = this.fetchGames.bind(this);
     this.state = {
       years: [],
       weeks: [],
-      focusYear: null,
-      focusWeek: null,
+      selectedYear: null,
+      selectedWeek: null,
       loading: true
     };
   }
@@ -44,28 +44,24 @@ class DateSelector extends Component {
     }
   }
 
-  refetchGames(event) {
+  fetchGames(event) {
     const label = event.props.label;
-    const eventType = label.match(/([a-z])/i) ? 'focusWeek' : 'focusYear';
+    const eventType = event.props.type === 'week' ? 'selectedWeek' : 'selectedYear';
 
-    /*
-    * Case: Change in focusWeek.
-    */
-    if (eventType === 'focusWeek') {
+    // Case: Change in selectedWeek.
+    if (eventType === 'selectedWeek') {
       const newFocusWeek =
-        this.state.focusWeek && this.state.focusWeek.displayName === label
-          ? { focusWeek: null }
-          : { focusWeek: event.props.data };
+        this.state.selectedWeek && this.state.selectedWeek.displayName === label
+          ? { selectedWeek: null }
+          : { selectedWeek: event.props.data };
 
       this.setState(newFocusWeek);
     }
 
-    /*
-    * Case: Change in focusYear.
-    */
-    if (eventType === 'focusYear') {
+    // Case: Change in selectedYear.
+    if (eventType === 'selectedYear') {
       this.setState({
-        focusYear: label
+        selectedYear: label
       });
       const refetchOptions = {
         year: label
@@ -76,39 +72,41 @@ class DateSelector extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const nextPropsSeason = nextProps.data.season;
-    /*
-    * Case: First Load of season data is recieved.
-    */
-    if (nextPropsSeason && this.state.loading) {
-      const newState = {
-        years:
-          this.state.years.length > 0 ? this.state.years : buildYears(nextPropsSeason.currentYear),
-        weeks: nextPropsSeason.allSeasonWeeks,
-        focusYear: this.state.focusYear
-          ? this.state.focusYear
-          : nextPropsSeason.currentYear.toString(),
-        focusWeek: this.state.focusWeek ? this.state.focusWeek : nextPropsSeason.currentWeek,
-        loading: nextProps.data.loading ? true : false
+    // Case: First Load of season data is recieved.
+    if (nextProps.data.season && this.state.loading) {
+      const generateNewState = (prevState, props) => {
+        const propsSeason = props.data.season;
+        return {
+          years: prevState.years.length > 0 ? prevState.years : buildYears(propsSeason.currentYear),
+          weeks: propsSeason.allSeasonWeeks,
+          selectedYear: prevState.selectedYear
+            ? prevState.selectedYear
+            : propsSeason.currentYear.toString(),
+          selectedWeek: prevState.selectedWeek ? prevState.selectedWeek : propsSeason.currentWeek,
+          loading: nextProps.data.loading ? true : false
+        };
       };
 
-      this.setState(newState);
+      this.setState(generateNewState);
     }
 
-    /*
-    * Case: New and distinct allSeasonWeeks data is recieved.
-    */
-    if (nextPropsSeason && this.props.data.season) {
-      if (!isEqual(this.props.data.season.allSeasonWeeks, nextPropsSeason.allSeasonWeeks)) {
-        const newWeeksState = {
-          weeks: nextPropsSeason.allSeasonWeeks,
-          focusWeek:
-            nextPropsSeason.allSeasonWeeks.indexOf(this.state.focusWeek) === -1
-              ? null
-              : this.state.focusWeek
+    // Case: New and distinct allSeasonWeeks data is recieved.
+    if (nextProps.data.season && this.props.data.season) {
+      if (!isEqual(this.props.data.season.allSeasonWeeks, nextProps.data.season.allSeasonWeeks)) {
+        const generateWeeksNewState = (prevState, props) => {
+          const propsSeason = nextProps.data.season;
+
+          return {
+            weeks: propsSeason.allSeasonWeeks,
+            selectedWeek:
+              prevState.selectedWeek &&
+              find(propsSeason.allSeasonWeeks, { displayName: prevState.selectedWeek.displayName })
+                ? prevState.selectedWeek
+                : null
+          };
         };
 
-        this.setState(newWeeksState);
+        this.setState(generateWeeksNewState);
       }
     }
   }
@@ -121,23 +119,25 @@ class DateSelector extends Component {
         <SwipeBar
           key="years"
           swipeElements={this.state.years}
-          refetchGames={selection => this.refetchGames(selection)}
+          fetchGames={selection => this.fetchGames(selection)}
           scrollToFocusElement={this.scrollToFocusElement}
-          focusElement={{ displayName: this.state.focusYear }}
+          focusElement={{ displayName: this.state.selectedYear }}
+          type="year"
         />
         <SwipeBar
           key="weeks"
           swipeElements={this.state.weeks}
-          refetchGames={selection => this.refetchGames(selection)}
+          fetchGames={selection => this.fetchGames(selection)}
           scrollToFocusElement={this.scrollToFocusElement}
-          focusElement={this.state.focusWeek ? this.state.focusWeek : []}
+          focusElement={this.state.selectedWeek ? this.state.selectedWeek : []}
+          type="week"
         />
         {data.loading && <Loading />}
         {!data.loading &&
           data.season && (
             <GameList
-              focusYear={this.state.focusYear}
-              focusWeek={this.state.focusWeek}
+              selectedYear={this.state.selectedYear}
+              selectedWeek={this.state.selectedWeek}
               seasonWeeks={data.season.allSeasonWeeks}
             />
           )}

@@ -8,11 +8,8 @@ import getTeamLogo from '../utils/get-team-logo';
 import nflTeams from '../data/nfl-teams';
 
 const GameSummary = props => {
-  const { home, away, homeScore, awayScore, time } = props.data;
-  const final = props.data.final === 1 ? true : false;
-  const localGameTime = moment(time * 1000)
-    .local()
-    .format('dddd, MMMM Do h:mm a');
+  const { home, away, homeScore, awayScore, status, time } = props.data;
+  const localGameTime = moment(time * 1000).local();
 
   const scoreStyles = css({
     minHeight: '1.2em',
@@ -22,13 +19,19 @@ const GameSummary = props => {
     }
   });
 
+  const liveStyles = css({
+    float: 'right',
+    marginTop: '-32px'
+  });
+
   const finalStyles = css({
     float: 'right',
     marginTop: '-32px'
   });
 
-  const timeStyles = css({
+  const scheduledStyles = css({
     float: 'right',
+    textAlign: 'right',
     marginTop: '-32px'
   });
 
@@ -57,8 +60,14 @@ const GameSummary = props => {
           </span>
           {nflTeams[home].displayName} <strong>{homeScore}</strong>
         </div>
-        {final && <span className={finalStyles}>Final</span>}
-        {!final && <span className={timeStyles}>{localGameTime}</span>}
+        {status === 'live' && <span className={liveStyles}>Live</span>}
+        {status === 'final' && <span className={finalStyles}>Final</span>}
+        {status === 'scheduled' && (
+          <span className={scheduledStyles}>
+            <div>{localGameTime.format('ddd M/D')}</div>
+            <div>{localGameTime.format('h:mm A')}</div>
+          </span>
+        )}
       </ListItem>
       <Divider />
     </div>
